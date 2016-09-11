@@ -32,7 +32,8 @@ docker-create-vm:
 
 kup:
 	@kubectl config set-cluster $(CLUSTER_NAME) --server=http://$(DOCKER_MACHINE_IP):8080
-	@kubectl config set-context $(CLUSTER_NAME) --cluster=$(CLUSTER_NAME)
+	@kubectl create namespace $(PROJECT_NAME)
+	@kubectl config set-context $(CLUSTER_NAME) --cluster=$(CLUSTER_NAME) --namespace=$(PROJECT_NAME)
 	@docker-compose -f kubemaster/docker-compose.yaml up -d
 	@echo "--------------------------------"
 	@echo "kubectl config use-context $(CLUSTER_NAME)"

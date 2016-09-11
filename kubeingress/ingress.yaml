@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: main-ingress
+  namespace: dummy
+spec:
+  backend:
+    serviceName: hellonode
+    servicePort: 8080
+  rules:
+  - http:
+      paths:
+      - path: /
+        backend:
+          serviceName: hellonode
+          servicePort: 8080

@@ -2,7 +2,6 @@
 CONFIG='../config.json'
 GCLOUD_ACCOUNT=$(shell jq -r '.gcloud_account' $(CONFIG))
 GCLOUD_PROJECT=$(shell jq -r '.gcloud_project' $(CONFIG))
-CLUSTER_NAME=$(shell jq -r '.k8s_cluster_name' $(CONFIG))
 
 DOCKER_CONTAINER='hellonode'
 DOCKER_IMGNAME="gcr.io/$(GCLOUD_PROJECT)/hellonode:v1"
@@ -20,8 +19,8 @@ deploy-k8s:
 	kubectl create -f ./k8s
 
 finish-k8s:
-	kubectl delete service hellonode-svc
-	kubectl delete deployment hellonode-dp
+	kubectl delete service hellonode
+	kubectl delete deployment hellonode
 
 docker-push-img:
 	gcloud --account $(GCLOUD_ACCOUNT) docker push $(DOCKER_IMGNAME) 
@@ -29,5 +28,4 @@ docker-push-img:
 none:
 	@echo $(GCLOUD_ACCOUNT)
 	@echo $(GCLOUD_PROJECT)
-	@echo $(CLUSTER_NAME)
 	@echo $(DOCKER_IMGNAME)
