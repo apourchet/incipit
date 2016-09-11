@@ -5,12 +5,12 @@ metadata:
   namespace: dummy
 spec:
   backend:
-    serviceName: hellonode
+    serviceName: hellogo
     servicePort: 8080
   rules:
   - http:
       paths:
-      - path: /
+      - path: /hellogo
         backend:
-          serviceName: hellonode
+          serviceName: hellogo
           servicePort: 8080

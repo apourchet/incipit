@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: hellogo
+  namespace: dummy
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      k8s-app: hellogo
+  template:
+    metadata:
+      labels:
+        k8s-app: hellogo
+    spec:
+      containers:
+      - name: hellogo
+        image: gcr.io/dummy-143017/hellogo:v1
+        ports:
+        - containerPort: 8080
