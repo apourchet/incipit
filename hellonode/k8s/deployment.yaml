@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: hellonode-dp
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: hellonode
+    spec:
+      containers:
+      - name: hellonode
+        image: gcr.io/dummy-143017/hellonode:v1
+        ports:
+        - containerPort: 8080
