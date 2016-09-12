@@ -4,9 +4,6 @@ metadata:
   name: main-ingress
   namespace: dummy
 spec:
-  backend:
-    serviceName: hellogo
-    servicePort: 8080
   rules:
   - http:
       paths:

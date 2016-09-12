@@ -1,9 +1,8 @@
-
 MICROSERVICE="hellogo"
 
-CONFIG='../config.json'
-ACCOUNT=$(shell jq -r '.gcloud_account' $(CONFIG))
-PROJECT=$(shell jq -r '.gcloud_project' $(CONFIG))
+CONFIG='../gcloud.json'
+ACCOUNT=$(shell jq -r '.account' $(CONFIG))
+PROJECT=$(shell jq -r '.project' $(CONFIG))
 
 DOCKER_CONTAINER=$(MICROSERVICE)
 DOCKER_IMGNAME="gcr.io/$(PROJECT)/$(MICROSERVICE):v1"

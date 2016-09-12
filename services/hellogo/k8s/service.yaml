@@ -11,4 +11,4 @@ spec:
     targetPort: 8080
   selector:
     k8s-app: hellogo
-  type: LoadBalancer
+  type: ClusterIP

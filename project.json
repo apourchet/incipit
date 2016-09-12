@@ -1,0 +1,6 @@
+{
+    "name": "dummy",
+    "cluster": {
+        "nodes": 2   
+    }
+}
