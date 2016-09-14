@@ -1,11 +1,14 @@
 MICROSERVICE="hellogo"
 
-CONFIG='../gcloud.json'
+CONFIG='../../gcloud.json'
 ACCOUNT=$(shell jq -r '.account' $(CONFIG))
 PROJECT=$(shell jq -r '.project' $(CONFIG))
 
 DOCKER_CONTAINER=$(MICROSERVICE)
 DOCKER_IMGNAME="gcr.io/$(PROJECT)/$(MICROSERVICE):v1"
+
+KUBE_CONFIG_TOOL="../../tools/kube-config.go"
+KUBE_CONFIG='../../kubeconfigs/local.json'
 
 default:
 	go build -o bin/hellogo server.go 
@@ -13,14 +16,8 @@ default:
 build-image:
 	docker build -t $(DOCKER_IMGNAME) .
 
-run-local:
-	docker run -d -p 8080:8080 --name $(DOCKER_CONTAINER) $(DOCKER_IMGNAME)
-
-stop-local:
-	docker stop $(DOCKER_CONTAINER)
-
 deploy-k8s:
-	kubectl create -f ./k8s
+	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./k8s/*.yaml | kubectl create -f -
 
 finish-k8s:
 	kubectl delete service $(MICROSERVICE)

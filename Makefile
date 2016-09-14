@@ -6,7 +6,7 @@ PROJECT_NAME=$(shell jq -r '.name' project.json)
 # GCLOUD THINGS
 ACCOUNT=$(shell jq -r '.account' gcloud.json)
 PROJECT=$(shell jq -r '.project' gcloud.json)
-ZONE=$(shell jq -r '.gcloud_zone' gcloud.json)
+ZONE=$(shell jq -r '.zone' gcloud.json)
 GCLOUD_OPTS=--account $(ACCOUNT) --project $(PROJECT)
 
 # CLUSTER THINGS
@@ -16,6 +16,19 @@ DOWNCMD="mount | grep -o 'on /var/lib/kubelet.* type' | cut -c 4- | rev | cut -c
 
 # DOCKER THINGS
 DOCKER_MACHINE_IP=$(shell docker-machine ip dummy)
+
+default:
+	@echo $(PROJECT_NAME)
+	@echo $(ACCOUNT)
+	@echo $(PROJECT)
+	@echo $(ZONE)
+	@echo $(CLUSTER_NAME)
+	@echo $(CLUSTER_NODES)
+	@echo $(DOCKER_MACHINE_IP)
+
+build-images:
+	make -C services/hellogo build-image
+	make -C services/ingress build-image
 
 gcloud-kup:
 	gcloud $(GCLOUD_OPTS) config set compute/zone $(ZONE)
@@ -31,19 +44,19 @@ docker-create-vm:
 
 kup:
 	kubectl config set-cluster $(CLUSTER_NAME) --server=http://$(DOCKER_MACHINE_IP):8080
-	kubectl config set-context $(CLUSTER_NAME) --cluster=$(CLUSTER_NAME) --namespace=$(PROJECT_NAME)
+	kubectl config set-context $(PROJECT_NAME) --cluster=$(CLUSTER_NAME) --namespace=$(PROJECT_NAME)
+	kubectl config use-context $(PROJECT_NAME)
 	docker-compose -f kubemaster/docker-compose.yaml up -d
-	sleep 20
+	sleep 40
 	kubectl create namespace $(PROJECT_NAME)
 	make -C kubedns deploy-k8s
 	@echo "--------------------------------"
-	@echo "kubectl config use-context $(CLUSTER_NAME)"
 	@echo "kubectl cluster-info"
 
 kdown:
-	@docker-compose -f kubemaster/docker-compose.yaml down
-	@docker-machine ssh $(PROJECT_NAME) $(DOWNCMD)
-	@docker ps -a -f "name=k8s_" -q | xargs docker rm -f
+	docker-compose -f kubemaster/docker-compose.yaml down
+	docker-machine ssh $(PROJECT_NAME) $(DOWNCMD)
+	docker ps -a -f "name=k8s_" -q | xargs docker rm -f
 
 deploy-k8s:
 	make -C services/ingress deploy-k8s
@@ -53,12 +66,4 @@ finish-k8s:
 	make -C services/ingress finish-k8s
 	make -C services/hellogo finish-k8s
 
-default:
-	@echo $(PROJECT_NAME)
-	@echo $(ACCOUNT)
-	@echo $(PROJECT)
-	@echo $(ZONE)
-	@echo $(CLUSTER_NAME)
-	@echo $(CLUSTER_NODES)
-	@echo $(DOCKER_MACHINE_IP)
 

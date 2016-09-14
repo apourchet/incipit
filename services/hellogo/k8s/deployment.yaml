@@ -4,7 +4,7 @@ metadata:
   name: hellogo
   namespace: dummy
 spec:
-  replicas: 2
+  replicas: {{.HELLOGO_REPLICAS}}
   selector:
     matchLabels:
       k8s-app: hellogo
