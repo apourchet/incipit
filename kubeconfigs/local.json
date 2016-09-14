@@ -1,4 +1,6 @@
 {
+    "NAMESPACE": "dummy",
     "NODEIP": "127.0.0.1",
-    "HELLOGO_REPLICAS": "2"
+    "HELLOGO_REPLICAS": "2",
+    "API_HOSTNAME": "dummy.machine"
 }

@@ -20,7 +20,7 @@ spec:
       containers:
       - image: gcr.io/google_containers/nginx-ingress-controller:0.8.2
         name: nginx-ingress-lb
-        imagePullPolicy: Always
+        # imagePullPolicy: Always
         livenessProbe:
           httpGet:
             path: /healthz

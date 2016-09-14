@@ -5,7 +5,8 @@ metadata:
   namespace: dummy
 spec:
   rules:
-  - http:
+  - host: {{.API_HOSTNAME}}
+    http:
       paths:
       - path: /hellogo
         backend:
