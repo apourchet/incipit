@@ -6,10 +6,15 @@ KUBE_CONFIG='../../kubeconfigs/local.json'
 build-image:
 	@echo "Nothing to do"
 
-deploy-k8s:
-	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./k8s/*.yaml | kubectl create -f -
+k8s-resources:
+	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./k8s/*-res.yaml | kubectl create -f -
 
-finish-k8s:
-	kubectl delete ing main-ingress
+k8s-services:
+	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./k8s/*-svc.yaml | kubectl create -f -
+
+k8s-deployments:
+	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./k8s/*-dp.yaml | kubectl create -f -
+
+k8s-undeploy:
 	kubectl delete deployment default-http-backend main-ingress-lb
-	kubectl delete service default-http-backend main-ingress
+

@@ -17,6 +17,10 @@ DOWNCMD="mount | grep -o 'on /var/lib/kubelet.* type' | cut -c 4- | rev | cut -c
 # DOCKER THINGS
 DOCKER_MACHINE_IP=$(shell docker-machine ip dummy)
 
+# TOOLS
+KUBE_CONFIG_TOOL=./tools/kube-config.go
+KUBE_CONFIG=./kubeconfigs/local.json
+
 default:
 	@echo $(PROJECT_NAME)
 	@echo $(ACCOUNT)
@@ -49,7 +53,6 @@ kup:
 	docker-compose -f kubemaster/docker-compose.yaml up -d
 	sleep 40
 	kubectl create namespace $(PROJECT_NAME)
-	make -C kubedns deploy-k8s
 	@echo "--------------------------------"
 	@echo "kubectl cluster-info"
 
@@ -58,12 +61,12 @@ kdown:
 	docker-machine ssh $(PROJECT_NAME) $(DOWNCMD)
 	docker ps -a -f "name=k8s_" -q | xargs docker rm -f
 
-deploy-k8s:
-	make -C services/ingress deploy-k8s
-	make -C services/hellogo deploy-k8s
+k8s-resources:
+	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./services/*/k8s/*-res.yaml | kubectl create -f -
 
-finish-k8s:
-	make -C services/ingress finish-k8s
-	make -C services/hellogo finish-k8s
+k8s-services:
+	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./services/*/k8s/*-svc.yaml | kubectl create -f -
 
+k8s-deployments:
+	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./services/*/k8s/*-dp.yaml | kubectl create -f -
 
