@@ -13,25 +13,8 @@ KUBE_CONFIG='../../kubeconfigs/local.json'
 default:
 	go build -o bin/hellogo server.go 
 
-build-image:
+docker-build:
 	docker build -t $(DOCKER_IMGNAME) .
 
-docker-push-img:
+docker-publish:
 	gcloud --account $(ACCOUNT) docker push $(DOCKER_IMGNAME) 
-
-k8s-resources:
-	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./k8s/*-res.yaml | kubectl create -f -
-
-k8s-services:
-	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./k8s/*-svc.yaml | kubectl create -f -
-
-k8s-deployments:
-	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./k8s/*-dp.yaml | kubectl create -f -
-
-k8s-recall:
-	kubectl delete deployment $(MICROSERVICE)
-
-none:
-	@echo $(ACCOUNT)
-	@echo $(PROJECT)
-	@echo $(DOCKER_IMGNAME)

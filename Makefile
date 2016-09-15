@@ -24,6 +24,8 @@ ETC_HOST_HACK_DO =
 KUBE_CONFIG_TOOL = ./tools/kube-config.go
 KUBE_CONFIG = ./kubeconfigs/local.json
 
+.PHONY: resources deployments
+
 default:
 	@echo $(PROJECT_NAME)
 	@echo $(ACCOUNT)
@@ -33,9 +35,8 @@ default:
 	@echo $(CLUSTER_NODES)
 	@echo $(DOCKER_MACHINE_IP)
 
-build-images:
-	make -C resources/hellogo build-image
-	make -C resources/ingress build-image
+docker-build:
+	make -C containers docker-build
 
 gcloud-kup:
 	gcloud $(GCLOUD_OPTS) config set compute/zone $(ZONE)
@@ -70,18 +71,14 @@ kdown:
 	docker-machine ssh $(PROJECT_NAME) $(DOWNCMD)
 	docker ps -a -f "name = k8s_" -q | xargs docker rm -f
 
-k8s-resources:
-	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./resources/*/k8s/*-res.yaml | kubectl apply -f -
+resources:
+	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./resources/*/*.yaml | kubectl apply -f -
 
-k8s-services:
-	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./resources/*/k8s/*-svc.yaml | kubectl apply -f -
+deployments:
+	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./deployments/*/*.yaml | kubectl apply -f -
 
-k8s-deployments:
-	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./resources/*/k8s/*-dp.yaml | kubectl apply -f -
-
-k8s-recall:
-	make -C ./resources/hellogo k8s-recall
-	make -C ./resources/ingress k8s-recall
+recall:
+	@echo "TODO: delete all deployments in namespace"
 
 local-certs:
 	openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./misc/local-server.key -out ./misc/local-server.crt -subj "/CN=$(DOCKER_MACHINE_NAME).machine"
