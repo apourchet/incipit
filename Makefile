@@ -79,5 +79,9 @@ k8s-services:
 k8s-deployments:
 	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./resources/*/k8s/*-dp.yaml | kubectl apply -f -
 
+k8s-recall:
+	make -C ./resources/hellogo k8s-recall
+	make -C ./resources/ingress k8s-recall
+
 local-certs:
 	openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./misc/local-server.key -out ./misc/local-server.crt -subj "/CN=$(DOCKER_MACHINE_NAME).machine"
