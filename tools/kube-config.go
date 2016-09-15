@@ -12,6 +12,20 @@ func usage() {
 	fmt.Println("Must have at least one configuration file and one k8s-template as arguments")
 }
 
+func readFile(fname string) (string, error) {
+	b, err := ioutil.ReadFile(fname)
+	if err != nil {
+		return "", err
+	}
+	return string(b), err
+}
+
+func getFuncMap() template.FuncMap {
+	return template.FuncMap{
+		"include": readFile,
+	}
+}
+
 func main() {
 	if len(os.Args) < 3 {
 		usage()
@@ -40,7 +54,7 @@ func main() {
 			fmt.Fprintf(os.Stderr, err.Error())
 			continue
 		}
-		tmpl, err := template.New(fname).Parse(string(templateBytes))
+		tmpl, err := template.New(fname).Funcs(getFuncMap()).Parse(string(templateBytes))
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Failed to parse template file: %s\n", fname)
 			fmt.Fprintf(os.Stderr, err.Error())
