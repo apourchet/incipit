@@ -33,8 +33,8 @@ default:
 	@echo $(DOCKER_MACHINE_IP)
 
 build-images:
-	make -C services/hellogo build-image
-	make -C services/ingress build-image
+	make -C resources/hellogo build-image
+	make -C resources/ingress build-image
 
 gcloud-kup:
 	gcloud $(GCLOUD_OPTS) config set compute/zone $(ZONE)
@@ -65,15 +65,15 @@ kdown:
 	docker ps -a -f "name=k8s_" -q | xargs docker rm -f
 
 k8s-resources:
-	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./services/*/k8s/*-res.yaml | kubectl create -f -
+	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./resources/*/k8s/*-res.yaml | kubectl create -f -
 
 k8s-services:
-	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./services/*/k8s/*-svc.yaml | kubectl create -f -
+	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./resources/*/k8s/*-svc.yaml | kubectl create -f -
 
 k8s-deployments:
-	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./services/*/k8s/*-dp.yaml | kubectl create -f -
+	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./resources/*/k8s/*-dp.yaml | kubectl create -f -
 
 local-certs:
-	openssl genrsa -aes256 -out resources/local-server.key 2048
-	openssl req -new -key resources/local-server.key -out resources/local-server.csr
-	openssl x509 -req -days 365 -in resources/local-server.csr -signkey resources/local-server.key -out resources/local-server.crt
+	openssl genrsa -aes256 -out misc/local-server.key 2048
+	openssl req -new -key misc/local-server.key -out misc/local-server.csr
+	openssl x509 -req -days 365 -in misc/local-server.csr -signkey resources/local-server.key -out misc/local-server.crt

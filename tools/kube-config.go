@@ -1,6 +1,7 @@
 package main
 
 import (
+	b64 "encoding/base64"
 	"encoding/json"
 	"fmt"
 	"html/template"
@@ -20,9 +21,14 @@ func readFile(fname string) (string, error) {
 	return string(b), err
 }
 
+func base64Encode(s string) string {
+	return string(b64.StdEncoding.EncodeToString([]byte(s)))
+}
+
 func getFuncMap() template.FuncMap {
 	return template.FuncMap{
 		"include": readFile,
+		"base64":  base64Encode,
 	}
 }
 
