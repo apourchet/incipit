@@ -73,3 +73,7 @@ k8s-services:
 k8s-deployments:
 	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./services/*/k8s/*-dp.yaml | kubectl create -f -
 
+local-certs:
+	openssl genrsa -aes256 -out resources/local-server.key 2048
+	openssl req -new -key resources/local-server.key -out resources/local-server.csr
+	openssl x509 -req -days 365 -in resources/local-server.csr -signkey resources/local-server.key -out resources/local-server.crt
