@@ -56,8 +56,8 @@ docker-destroy-vm:
 	docker-machine rm $(DOCKER_MACHINE_NAME)
 
 kup:
-	kubectl config set-cluster $(CLUSTER_NAME) --server = http://$(DOCKER_MACHINE_IP):8080
-	kubectl config set-context $(PROJECT_NAME) --cluster = $(CLUSTER_NAME) --namespace=$(PROJECT_NAME)
+	kubectl config set-cluster $(CLUSTER_NAME) --server http://$(DOCKER_MACHINE_IP):8080
+	kubectl config set-context $(PROJECT_NAME) --cluster $(CLUSTER_NAME) --namespace $(PROJECT_NAME)
 	kubectl config use-context $(PROJECT_NAME)
 	docker-compose -f kubemaster/docker-compose.yaml up -d
 	sleep 40
@@ -71,15 +71,13 @@ kdown:
 	docker ps -a -f "name = k8s_" -q | xargs docker rm -f
 
 k8s-resources:
-	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./resources/*/k8s/*-res.yaml | kubectl create -f -
+	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./resources/*/k8s/*-res.yaml | kubectl apply -f -
 
 k8s-services:
-	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./resources/*/k8s/*-svc.yaml | kubectl create -f -
+	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./resources/*/k8s/*-svc.yaml | kubectl apply -f -
 
 k8s-deployments:
-	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./resources/*/k8s/*-dp.yaml | kubectl create -f -
+	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./resources/*/k8s/*-dp.yaml | kubectl apply -f -
 
 local-certs:
-	openssl genrsa -aes256 -out misc/local-server.key 2048
-	openssl req -new -key misc/local-server.key -out misc/local-server.csr
-	openssl x509 -req -days 365 -in misc/local-server.csr -signkey resources/local-server.key -out misc/local-server.crt
+	openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./misc/local-server.key -out ./misc/local-server.crt -subj "/CN=$(DOCKER_MACHINE_NAME).machine"

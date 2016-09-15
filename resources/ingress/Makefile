@@ -7,14 +7,14 @@ build-image:
 	@echo "Nothing to do"
 
 k8s-resources:
-	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./k8s/*-res.yaml | kubectl create -f -
+	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./k8s/*-res.yaml | kubectl apply -f -
 
 k8s-services:
-	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./k8s/*-svc.yaml | kubectl create -f -
+	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./k8s/*-svc.yaml | kubectl apply -f -
 
 k8s-deployments:
-	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./k8s/*-dp.yaml | kubectl create -f -
+	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./k8s/*-dp.yaml | kubectl apply -f -
 
-k8s-undeploy:
+k8s-recall:
 	kubectl delete deployment default-http-backend main-ingress-lb
 

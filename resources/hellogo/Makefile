@@ -28,7 +28,7 @@ k8s-services:
 k8s-deployments:
 	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./k8s/*-dp.yaml | kubectl create -f -
 
-k8s-undeploy:
+k8s-recall:
 	kubectl delete deployment $(MICROSERVICE)
 
 none:

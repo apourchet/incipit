@@ -2,6 +2,9 @@
     "NAMESPACE": "dummy",
     "NODEIP": "127.0.0.1",
     "HELLOGO_REPLICAS": "2",
-    "API_HOSTNAME": "dummy.machine",
-    "LOCAL_CERT": "misc/local-server.crt"
+    "INGRESS_HOSTNAME": "dummy.machine",
+    "INGRESS_HTTP_PORT": "30001",
+    "INGRESS_HTTPS_PORT": "30002",
+    "SERVER_CERT": "misc/local-server.crt",
+    "SERVER_KEY": "misc/local-server.key"
 }
