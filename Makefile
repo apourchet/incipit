@@ -61,10 +61,8 @@ kup:
 	kubectl config set-context $(PROJECT_NAME) --cluster $(CLUSTER_NAME) --namespace $(PROJECT_NAME)
 	kubectl config use-context $(PROJECT_NAME)
 	docker-compose -f kubemaster/docker-compose.yaml up -d
-	sleep 40
+	bash ./tools/retry.sh "kubectl cluster-info" 2
 	kubectl create namespace $(PROJECT_NAME)
-	@echo "--------------------------------"
-	@echo "kubectl cluster-info"
 
 kdown:
 	docker-compose -f kubemaster/docker-compose.yaml down
