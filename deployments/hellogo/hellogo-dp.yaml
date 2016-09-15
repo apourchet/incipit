@@ -18,3 +18,7 @@ spec:
         image: gcr.io/dummy-143017/hellogo:v1
         ports:
         - containerPort: 8080
+      - name: hellonode
+        image: gcr.io/dummy-143017/hellonode:v1
+        ports:
+        - containerPort: 8081
