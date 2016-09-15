@@ -15,7 +15,9 @@ CLUSTER_NODES=$(shell jq -r '.cluster.nodes' project.json)
 DOWNCMD="mount | grep -o 'on /var/lib/kubelet.* type' | cut -c 4- | rev | cut -c 6- | rev | sort -r  | xargs --no-run-if-empty sudo umount"
 
 # DOCKER THINGS
-DOCKER_MACHINE_IP=$(shell docker-machine ip dummy)
+DOCKER_MACHINE_NAME=$(PROJECT_NAME)
+DOCKER_MACHINE_IP=$(shell docker-machine ip $(DOCKER_MACHINE_NAME))
+ETC_HOST_HACK=sudo sed -i '' "/$(DOCKER_MACHINE_NAME)\.machine/d" /etc/hosts && sudo /bin/bash -c "echo \"$(DOCKER_MACHINE_IP)   $(DOCKER_MACHINE_NAME).machine\" >> /etc/hosts"
 
 # TOOLS
 KUBE_CONFIG_TOOL=./tools/kube-config.go
@@ -43,8 +45,9 @@ gcloud-kdown:
 	gcloud $(GCLOUD_OPTS) container clusters delete $(CLUSTER_NAME)
 
 docker-create-vm:
-	docker-machine create -d virtualbox $(PROJECT_NAME);
-	@echo "Now execute in shell:\neval (docker-machine env $(PROJECT_NAME))"
+	docker-machine create -d virtualbox $(DOCKER_MACHINE_NAME);
+	$(ETC_HOST_HACK)
+	@echo "Now execute in shell:\neval (docker-machine env $(DOCKER_MACHINE_NAME))"
 
 kup:
 	kubectl config set-cluster $(CLUSTER_NAME) --server=http://$(DOCKER_MACHINE_IP):8080
