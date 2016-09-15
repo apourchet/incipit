@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: main-ingress
-  namespace: dummy
+  namespace: {{.NAMESPACE}}
 spec:
   rules:
   - host: {{.API_HOSTNAME}}

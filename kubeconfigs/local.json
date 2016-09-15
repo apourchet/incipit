@@ -3,5 +3,5 @@
     "NODEIP": "127.0.0.1",
     "HELLOGO_REPLICAS": "2",
     "API_HOSTNAME": "dummy.machine",
-    "LOCAL_CERT": "resources/local-server.crt"
+    "LOCAL_CERT": "misc/local-server.crt"
 }
