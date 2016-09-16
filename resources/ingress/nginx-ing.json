@@ -1,0 +1,34 @@
+{
+    "kind": "Ingress", 
+    "spec": {
+        "tls": [
+            {
+                "hosts": [
+                    "{{.INGRESS_HOSTNAME}}"
+                ], 
+                "secretName": "server-cert"
+            }
+        ], 
+        "rules": [
+            {
+                "host": "{{.INGRESS_HOSTNAME}}", 
+                "http": {
+                    "paths": [
+                        {
+                            "path": "/hellogo", 
+                            "backend": {
+                                "serviceName": "hellogo", 
+                                "servicePort": 8080
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }, 
+    "apiVersion": "extensions/v1beta1", 
+    "metadata": {
+        "namespace": "{{.NAMESPACE}}", 
+        "name": "main-ingress"
+    }
+}

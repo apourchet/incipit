@@ -1,0 +1,45 @@
+{
+    "kind": "Deployment", 
+    "spec": {
+        "replicas": {{.HELLOGO_REPLICAS}},
+        "template": {
+            "spec": {
+                "containers": [
+                    {
+                        "image": "gcr.io/dummy-143017/hellogo:v1", 
+                        "name": "hellogo", 
+                        "ports": [
+                            {
+                                "containerPort": 8080
+                            }
+                        ]
+                    }, 
+                    {
+                        "image": "gcr.io/dummy-143017/hellonode:v1", 
+                        "name": "hellonode", 
+                        "ports": [
+                            {
+                                "containerPort": 8081
+                            }
+                        ]
+                    }
+                ]
+            }, 
+            "metadata": {
+                "labels": {
+                    "k8s-app": "hellogo"
+                }
+            }
+        }, 
+        "selector": {
+            "matchLabels": {
+                "k8s-app": "hellogo"
+            }
+        }
+    }, 
+    "apiVersion": "extensions/v1beta1", 
+    "metadata": {
+        "namespace": "dummy", 
+        "name": "hellogo"
+    }
+}

@@ -1,0 +1,22 @@
+{
+    "kind": "Service", 
+    "spec": {
+        "type": "LoadBalancer", 
+        "ports": [
+            {
+                "targetPort": 8080, 
+                "protocol": "TCP", 
+                "port": 80, 
+                "name": "http"
+            }
+        ], 
+        "selector": {
+            "k8s-app": "default-http-backend"
+        }
+    }, 
+    "apiVersion": "v1", 
+    "metadata": {
+        "namespace": "dummy", 
+        "name": "default-http-backend"
+    }
+}

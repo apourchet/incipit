@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: hellogo
-  namespace: dummy
+  namespace: {{.NAMESPACE}}
 spec:
   ports:
   - name: http

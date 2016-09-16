@@ -62,7 +62,7 @@ kup:
 	kubectl config use-context $(PROJECT_NAME)
 	docker-compose -f kubemaster/docker-compose.yaml up -d
 	bash ./tools/retry.sh "kubectl cluster-info" 2
-	kubectl create namespace $(PROJECT_NAME)
+	-kubectl create namespace $(PROJECT_NAME)
 
 kdown:
 	docker-compose -f kubemaster/docker-compose.yaml down
@@ -70,13 +70,13 @@ kdown:
 	docker ps -a -f "name = k8s_" -q | xargs docker rm -f
 
 resources:
-	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./resources/*/*.yaml | kubectl apply -f -
+	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./resources/*/*.json | kubectl apply -f -
 
 deployments:
-	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./deployments/*/*.yaml | kubectl apply -f -
+	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./deployments/*/*.json | kubectl apply -f -
 
 recall:
-	@echo "TODO: delete all deployments in namespace"
+	kubectl get deployments | cut -f 1 -d ' ' | tail -n +2 | xargs kubectl delete deployments
 
 local-certs:
 	openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./misc/local-server.key -out ./misc/local-server.crt -subj "/CN=$(DOCKER_MACHINE_NAME).machine"

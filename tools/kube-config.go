@@ -72,6 +72,6 @@ func main() {
 			fmt.Fprintf(os.Stderr, err.Error())
 			continue
 		}
-		fmt.Println("---")
+		// fmt.Println("---")
 	}
 }
