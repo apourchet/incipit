@@ -20,6 +20,12 @@
                                 "serviceName": "hellogo", 
                                 "servicePort": 8080
                             }
+                        }, {
+                            "path": "/hellonode", 
+                            "backend": {
+                                "serviceName": "hellonode", 
+                                "servicePort": 8081
+                            }
                         }
                     ]
                 }

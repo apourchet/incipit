@@ -1,7 +1,12 @@
 {
+    "apiVersion": "extensions/v1beta1", 
     "kind": "Deployment", 
+    "metadata": {
+        "namespace": "{{.NAMESPACE}}", 
+        "name": "hello"
+    },
     "spec": {
-        "replicas": {{.HELLOGO_REPLICAS}},
+        "replicas": {{.HELLO_REPLICAS}},
         "template": {
             "spec": {
                 "containers": [
@@ -27,19 +32,16 @@
             }, 
             "metadata": {
                 "labels": {
-                    "k8s-app": "hellogo"
+                    "hellogo": "true",
+                    "hellonode": "true"
                 }
             }
         }, 
         "selector": {
             "matchLabels": {
-                "k8s-app": "hellogo"
+                "hellogo": "true",
+                "hellonode": "true"
             }
         }
-    }, 
-    "apiVersion": "extensions/v1beta1", 
-    "metadata": {
-        "namespace": "dummy", 
-        "name": "hellogo"
     }
 }

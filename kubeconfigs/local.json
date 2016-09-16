@@ -1,7 +1,7 @@
 {
     "NAMESPACE": "dummy",
     "NODEIP": "127.0.0.1",
-    "HELLOGO_REPLICAS": "2",
+    "HELLO_REPLICAS": "2",
     "INGRESS_HOSTNAME": "dummy.machine",
     "INGRESS_HTTP_PORT": "30001",
     "INGRESS_HTTPS_PORT": "30002",

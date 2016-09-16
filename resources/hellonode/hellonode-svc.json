@@ -16,7 +16,7 @@
             }
         ], 
         "selector": {
-            "k8s-app": "hellogo"
+            "hellonode": "true"
         }
     }
 }

@@ -78,5 +78,8 @@ deployments:
 recall:
 	kubectl get deployments | cut -f 1 -d ' ' | tail -n +2 | xargs kubectl delete deployments
 
+test:
+	bash tests/first.sh
+
 local-certs:
 	openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./misc/local-server.key -out ./misc/local-server.crt -subj "/CN=$(DOCKER_MACHINE_NAME).machine"
