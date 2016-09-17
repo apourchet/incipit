@@ -50,6 +50,9 @@ docker-create-vm:
 	docker-machine create -d virtualbox $(DOCKER_MACHINE_NAME)
 	$(ETC_HOST_HACK_UNDO)
 	sudo /bin/bash -c "echo \"`docker-machine ip $(DOCKER_MACHINE_NAME)`    $(DOCKER_MACHINE_NAME).machine\" >> /etc/hosts"
+	docker-machine scp /usr/local/docker-dev/machine/bootsync.sh $(DOCKER_MACHINE_NAME):/tmp/bootsync.sh
+	docker-machine ssh $(DOCKER_MACHINE_NAME) sudo mv /tmp/bootsync.sh /var/lib/boot2docker/bootsync.sh
+	docker-machine ssh $(DOCKER_MACHINE_NAME) /var/lib/boot2docker/bootsync.sh
 	@echo "---------------------------------------------------------"
 	@echo "Now execute in shell:\neval (docker-machine env $(DOCKER_MACHINE_NAME))"
 
@@ -80,6 +83,9 @@ recall:
 
 test:
 	bash tests/first.sh
+
+ui:
+	kubectl create -f https://rawgit.com/kubernetes/dashboard/master/src/deploy/kubernetes-dashboard.yaml
 
 local-certs:
 	openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./misc/local-server.key -out ./misc/local-server.crt -subj "/CN=$(DOCKER_MACHINE_NAME).machine"
