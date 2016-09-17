@@ -25,6 +25,12 @@
 					{
 						"name": "redis",
 						"image": "gcr.io/google_containers/redis:v1",
+                        "env": [
+                            {
+                                "name": "MASTER",
+                                "value": "true"
+                            }
+                        ],
 						"ports": [
 							{
 								"containerPort": 6379
