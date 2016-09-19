@@ -9,14 +9,12 @@
 		"replicas": 1,
 		"selector": {
             "matchLabels": {
-                "name": "redis",
                 "redis": "true"
             }
 		},
 		"template": {
 			"metadata": {
 				"labels": {
-					"name": "redis",
                     "redis": "true"
 				}
 			},
