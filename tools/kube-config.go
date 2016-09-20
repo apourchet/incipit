@@ -25,10 +25,19 @@ func base64Encode(s string) string {
 	return string(b64.StdEncoding.EncodeToString([]byte(s)))
 }
 
+func loopOverInts(n float64) []int {
+	arr := make([]int, int(n))
+	for i := 0; i < int(n); i++ {
+		arr[i] = i
+	}
+	return arr
+}
+
 func getFuncMap() template.FuncMap {
 	return template.FuncMap{
 		"include": readFile,
 		"base64":  base64Encode,
+		"loop":    loopOverInts,
 	}
 }
 
@@ -38,7 +47,7 @@ func main() {
 		return
 	}
 
-	config := make(map[string]string)
+	config := make(map[string]interface{})
 	configBytes, err := ioutil.ReadFile(os.Args[1])
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to read config file %s\n", os.Args[1])

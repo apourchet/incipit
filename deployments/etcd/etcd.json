@@ -1,9 +1,10 @@
+{{range loop $.ETCD_NODES}}
 {
     "apiVersion": "extensions/v1beta1", 
     "kind": "Deployment", 
     "metadata": {
-        "namespace": "{{.NAMESPACE}}", 
-        "name": "etcd0"
+        "namespace": "{{$.NAMESPACE}}", 
+        "name": "etcd{{.}}"
     },
     "spec": {
         "replicas": 1,
@@ -11,27 +12,27 @@
             "metadata": {
                 "labels": {
                     "etcd": "true",
-                    "etcd0": "true"
+                    "etcd{{.}}": "true"
                 }
             },
             "spec": {
                 "containers": [
                     {
-                        "name": "etcd0",
+                        "name": "etcd{{.}}",
                         "command": [
                             "/usr/local/bin/etcd",
                             "--name",
-                            "etcd0",
+                            "etcd{{.}}",
                             "--initial-advertise-peer-urls",
-                            "http://$(ETCD0_SERVICE_HOST):2380",
+                            "http://$(ETCD{{.}}_SERVICE_HOST):2380",
                             "--listen-peer-urls",
                             "http://0.0.0.0:2380",
                             "--listen-client-urls",
                             "http://0.0.0.0:2379",
                             "--advertise-client-urls",
-                            "http://$(ETCD0_SERVICE_HOST):2379",
+                            "http://$(ETCD{{.}}_SERVICE_HOST):2379",
                             "--initial-cluster",
-                            "etcd0=http://$(ETCD0_SERVICE_HOST):2380",
+                            "{{range loop $.ETCD_NODES}}etcd{{.}}=http://$(ETCD{{.}}_SERVICE_HOST):2380,{{end}}",
                             "--initial-cluster-state",
                             "new"
                         ],
@@ -53,8 +54,9 @@
         }, 
         "selector": {
             "matchLabels": {
-                "etcd0": "true"
+                "etcd{{.}}": "true"
             }
         }
     }
 }
+{{end}}

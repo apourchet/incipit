@@ -1,9 +1,10 @@
+{{range loop $.ETCD_NODES}}
 {
     "apiVersion": "v1", 
     "kind": "Service", 
     "metadata": {
-        "namespace": "{{.NAMESPACE}}", 
-        "name": "etcd0"
+        "namespace": "{{$.NAMESPACE}}", 
+        "name": "etcd{{.}}"
     },
     "spec": {
         "type": "ClusterIP", 
@@ -21,7 +22,8 @@
             }
         ], 
         "selector": {
-            "etcd0": "true"
+            "etcd{{.}}": "true"
         }
     }
 }
+{{end}}
