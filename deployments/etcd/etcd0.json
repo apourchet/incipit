@@ -1,0 +1,60 @@
+{
+    "apiVersion": "extensions/v1beta1", 
+    "kind": "Deployment", 
+    "metadata": {
+        "namespace": "{{.NAMESPACE}}", 
+        "name": "etcd0"
+    },
+    "spec": {
+        "replicas": 1,
+        "template": {
+            "metadata": {
+                "labels": {
+                    "etcd": "true",
+                    "etcd0": "true"
+                }
+            },
+            "spec": {
+                "containers": [
+                    {
+                        "name": "etcd0",
+                        "command": [
+                            "/usr/local/bin/etcd",
+                            "--name",
+                            "etcd0",
+                            "--initial-advertise-peer-urls",
+                            "http://$(ETCD0_SERVICE_HOST):2380",
+                            "--listen-peer-urls",
+                            "http://0.0.0.0:2380",
+                            "--listen-client-urls",
+                            "http://0.0.0.0:2379",
+                            "--advertise-client-urls",
+                            "http://$(ETCD0_SERVICE_HOST):2379",
+                            "--initial-cluster",
+                            "etcd0=http://$(ETCD0_SERVICE_HOST):2380",
+                            "--initial-cluster-state",
+                            "new"
+                        ],
+                        "image": "quay.io/coreos/etcd:latest",
+                        "ports": [
+                            {
+                                "name": "client",
+                                "protocol": "TCP",
+                                "containerPort": 2379
+                            }, {
+                                "name": "server",
+                                "protocol": "TCP",
+                                "containerPort": 2380
+                            }
+                        ]
+                    }
+                ]
+            }
+        }, 
+        "selector": {
+            "matchLabels": {
+                "etcd0": "true"
+            }
+        }
+    }
+}
