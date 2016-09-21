@@ -23,6 +23,8 @@
                             "/usr/local/bin/etcd",
                             "--name",
                             "etcd{{.}}",
+                            "--data-dir",
+                            "/tmp/{{$.NAMESPACE}}/etcd/etcd{{.}}.d",
                             "--initial-advertise-peer-urls",
                             "http://$(ETCD{{.}}_SERVICE_HOST):2380",
                             "--listen-peer-urls",
@@ -47,7 +49,21 @@
                                 "protocol": "TCP",
                                 "containerPort": 2380
                             }
+                        ],
+                        "volumeMounts": [
+                            {
+                                "name": "tmp-pv",
+                                "mountPath": "/tmp/{{$.NAMESPACE}}/etcd"
+                            }
                         ]
+                    }
+                ],
+                "volumes": [
+                    {
+                        "name": "tmp-pv",
+                        "persistentVolumeClaim": {
+                            "claimName": "tmp"
+                        }
                     }
                 ]
             }
