@@ -10,7 +10,10 @@ DOCKER_IMGNAME="gcr.io/$(PROJECT)/$(MICROSERVICE):v1"
 KUBE_CONFIG_TOOL="../../tools/kube-config.go"
 KUBE_CONFIG='../../kubeconfigs/local.json'
 
-docker-build:
+build:
+	@echo "Nothing to do"
+
+build-docker:
 	docker build -t $(DOCKER_IMGNAME) .
 
 docker-publish:

@@ -2,7 +2,10 @@
     "apiVersion": "extensions/v1beta1", 
     "kind": "Deployment", 
     "metadata": {
-        "namespace": "{{.NAMESPACE}}", 
+        "labels": {
+            "main-ingress-lb": "true"
+        },
+        "namespace": "{{$.NAMESPACE}}", 
         "name": "main-ingress-lb"
     },
     "spec": {
