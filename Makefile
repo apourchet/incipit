@@ -24,27 +24,7 @@ ETC_HOST_HACK_DO =
 KUBE_CONFIG_TOOL = ./tools/kube-config.go
 KUBE_CONFIG = ./kubeconfigs/local.json
 
-.PHONY: resources deployments
-
-default:
-	@echo $(PROJECT_NAME)
-	@echo $(ACCOUNT)
-	@echo $(PROJECT)
-	@echo $(ZONE)
-	@echo $(CLUSTER_NAME)
-	@echo $(CLUSTER_NODES)
-	@echo $(DOCKER_MACHINE_IP)
-
-docker-build:
-	make -C containers docker-build
-
-gcloud-kup:
-	gcloud $(GCLOUD_OPTS) config set compute/zone $(ZONE)
-	gcloud $(GCLOUD_OPTS) container clusters create $(CLUSTER_NAME) --num-nodes $(CLUSTER_NODES)
-	gcloud $(GCLOUD_OPTS) container clusters get-credentials $(CLUSTER_NAME)
-
-gcloud-kdown:
-	gcloud $(GCLOUD_OPTS) container clusters delete $(CLUSTER_NAME)
+.PHONY: resources deployments docker-builder
 
 docker-create-vm:
 	docker-machine create -d virtualbox $(DOCKER_MACHINE_NAME)
@@ -58,6 +38,19 @@ docker-create-vm:
 
 docker-destroy-vm:
 	docker-machine rm $(DOCKER_MACHINE_NAME)
+
+# Command that should only be run from within a container
+build:
+	make -C containers build
+
+docker-builder:
+	docker build -f Dockerfile -t dummy-builder .
+
+docker-build: docker-builder
+	docker run --name hellogo-builder dummy-builder make build
+	docker cp hellogo-builder:/go/src/github.com/apourchet/dummy/containers/hellogo/build/ ./containers/hellogo/
+	make -C containers build-docker
+	docker rm hellogo-builder
 
 kup:
 	kubectl config set-cluster $(CLUSTER_NAME) --server http://$(DOCKER_MACHINE_IP):8080
@@ -89,3 +82,15 @@ ui:
 
 local-certs:
 	openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./misc/local-server.key -out ./misc/local-server.crt -subj "/CN=$(DOCKER_MACHINE_NAME).machine"
+
+
+# GOOGLE SPECIFIC TARGETS
+gcloud-kup:
+	gcloud $(GCLOUD_OPTS) config set compute/zone $(ZONE)
+	gcloud $(GCLOUD_OPTS) container clusters create $(CLUSTER_NAME) --num-nodes $(CLUSTER_NODES)
+	gcloud $(GCLOUD_OPTS) container clusters get-credentials $(CLUSTER_NAME)
+
+gcloud-kdown:
+	gcloud $(GCLOUD_OPTS) container clusters delete $(CLUSTER_NAME)
+
+

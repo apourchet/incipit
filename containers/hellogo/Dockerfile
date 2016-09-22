@@ -1,9 +1,6 @@
-FROM golang:1.7
-
-COPY server.go .
-RUN apt-get update
-RUN apt-get install redis-tools -y
+FROM scratch
 
 EXPOSE 8080
+ADD ./build/hellogo /hellogo
 
-CMD go run server.go
+ENTRYPOINT ["/hellogo"]
