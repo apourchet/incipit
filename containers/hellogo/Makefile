@@ -13,7 +13,6 @@ KUBE_CONFIG='../../kubeconfigs/local.json'
 .PHONY: build
 
 build:
-	# go build -o build/hellogo server.go 
 	CGO_ENABLED=0 go build -ldflags '-extldflags "-static"' -a -installsuffix cgo -o build/hellogo server.go
 
 build-docker:
