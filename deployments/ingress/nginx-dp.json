@@ -1,12 +1,44 @@
 {
+    "apiVersion": "extensions/v1beta1", 
     "kind": "Deployment", 
+    "metadata": {
+        "namespace": "{{.NAMESPACE}}", 
+        "name": "main-ingress-lb"
+    },
     "spec": {
-        "replicas": 1, 
+        "replicas": 1,
         "template": {
             "spec": {
-                "terminationGracePeriodSeconds": 60, 
                 "containers": [
                     {
+                        "name": "nginx-ingress-lb", 
+                        "image": "gcr.io/google_containers/nginx-ingress-controller:0.8.2", 
+                        "args": [
+                            "/nginx-ingress-controller", 
+                            "--default-backend-service=dummy/default-http-backend", 
+                            "--watch-namespace=dummy", 
+                            "--v=3", 
+                            "--sync-period=5s"
+                        ],
+                        "env": [
+                            {
+                                "valueFrom": {
+                                    "fieldRef": { "fieldPath": "metadata.name" }
+                                }, 
+                                "name": "POD_NAME"
+                            }, 
+                            {
+                                "valueFrom": {
+                                    "fieldRef": { "fieldPath": "metadata.namespace" }
+                                }, 
+                                "name": "POD_NAMESPACE"
+                            }
+                        ], 
+                        "ports": [
+                            { "containerPort": 80 }, 
+                            { "containerPort": 443 }, 
+                            { "containerPort": 8080 }
+                        ],
                         "livenessProbe": {
                             "initialDelaySeconds": 30, 
                             "httpGet": {
@@ -15,67 +47,21 @@
                                 "port": 10249
                             }, 
                             "timeoutSeconds": 5
-                        }, 
-                        "name": "nginx-ingress-lb", 
-                        "env": [
-                            {
-                                "valueFrom": {
-                                    "fieldRef": {
-                                        "fieldPath": "metadata.name"
-                                    }
-                                }, 
-                                "name": "POD_NAME"
-                            }, 
-                            {
-                                "valueFrom": {
-                                    "fieldRef": {
-                                        "fieldPath": "metadata.namespace"
-                                    }
-                                }, 
-                                "name": "POD_NAMESPACE"
-                            }
-                        ], 
-                        "image": "gcr.io/google_containers/nginx-ingress-controller:0.8.2", 
-                        "args": [
-                            "/nginx-ingress-controller", 
-                            "--default-backend-service=dummy/default-http-backend", 
-                            "--watch-namespace=dummy", 
-                            "--v=3", 
-                            "--sync-period=5s"
-                        ], 
-                        "ports": [
-                            {
-                                "containerPort": 80
-                            }, 
-                            {
-                                "containerPort": 443
-                            }, 
-                            {
-                                "containerPort": 8080
-                            }
-                        ]
+                        }
                     }
-                ]
+                ],
+                "terminationGracePeriodSeconds": 60
             }, 
             "metadata": {
                 "labels": {
-                    "k8s-app": "main-ingress-lb", 
-                    "name": "main-ingress-lb"
+                    "main-ingress-lb": "true"
                 }
             }
         }, 
         "selector": {
             "matchLabels": {
-                "k8s-app": "main-ingress-lb"
+                "main-ingress-lb": "true"
             }
         }
-    }, 
-    "apiVersion": "extensions/v1beta1", 
-    "metadata": {
-        "labels": {
-            "k8s-app": "main-ingress-lb"
-        }, 
-        "namespace": "dummy", 
-        "name": "main-ingress-lb"
     }
 }

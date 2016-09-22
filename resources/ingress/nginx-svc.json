@@ -2,7 +2,7 @@
     "kind": "Service", 
     "spec": {
         "selector": {
-            "k8s-app": "main-ingress-lb"
+            "main-ingress-lb": "true"
         }, 
         "type": "LoadBalancer", 
         "ports": [

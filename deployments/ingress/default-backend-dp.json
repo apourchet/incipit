@@ -1,5 +1,10 @@
 {
+    "apiVersion": "extensions/v1beta1", 
     "kind": "Deployment", 
+    "metadata": {
+        "namespace": "{{$.NAMESPACE}}", 
+        "name": "default-http-backend"
+    },
     "spec": {
         "revisionHistoryLimit": 5, 
         "replicas": 1, 
@@ -10,6 +15,9 @@
                     {
                         "image": "gcr.io/google_containers/defaultbackend:1.0", 
                         "name": "default-http-backend", 
+                        "ports": [
+                            { "containerPort": 8080 }
+                        ],
                         "livenessProbe": {
                             "initialDelaySeconds": 30, 
                             "httpGet": {
@@ -18,30 +26,20 @@
                                 "port": 8080
                             }, 
                             "timeoutSeconds": 5
-                        }, 
-                        "ports": [
-                            {
-                                "containerPort": 8080
-                            }
-                        ]
+                        }
                     }
                 ]
             }, 
             "metadata": {
                 "labels": {
-                    "k8s-app": "default-http-backend"
+                    "default-http-backend": "true"
                 }
             }
         }, 
         "selector": {
             "matchLabels": {
-                "k8s-app": "default-http-backend"
+                "default-http-backend": "true"
             }
         }
-    }, 
-    "apiVersion": "extensions/v1beta1", 
-    "metadata": {
-        "namespace": "dummy", 
-        "name": "default-http-backend"
     }
 }

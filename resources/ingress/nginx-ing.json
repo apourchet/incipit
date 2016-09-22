@@ -1,5 +1,10 @@
 {
+    "apiVersion": "extensions/v1beta1", 
     "kind": "Ingress", 
+    "metadata": {
+        "namespace": "{{.NAMESPACE}}", 
+        "name": "main-ingress"
+    },
     "spec": {
         "tls": [
             {
@@ -31,10 +36,5 @@
                 }
             }
         ]
-    }, 
-    "apiVersion": "extensions/v1beta1", 
-    "metadata": {
-        "namespace": "{{.NAMESPACE}}", 
-        "name": "main-ingress"
     }
 }

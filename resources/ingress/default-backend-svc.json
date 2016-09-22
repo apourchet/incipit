@@ -1,5 +1,10 @@
 {
+    "apiVersion": "v1", 
     "kind": "Service", 
+    "metadata": {
+        "namespace": "{{$.NAMESPACE}}", 
+        "name": "default-http-backend"
+    },
     "spec": {
         "type": "LoadBalancer", 
         "ports": [
@@ -11,12 +16,7 @@
             }
         ], 
         "selector": {
-            "k8s-app": "default-http-backend"
+            "default-http-backend": "true"
         }
-    }, 
-    "apiVersion": "v1", 
-    "metadata": {
-        "namespace": "dummy", 
-        "name": "default-http-backend"
     }
 }

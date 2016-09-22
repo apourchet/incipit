@@ -24,7 +24,7 @@
                             "--name",
                             "etcd{{.}}",
                             "--data-dir",
-                            "/tmp/{{$.NAMESPACE}}/etcd/etcd{{.}}.d",
+                            "/data/etcd/etcd{{.}}.d",
                             "--initial-advertise-peer-urls",
                             "http://$(ETCD{{.}}_SERVICE_HOST):2380",
                             "--listen-peer-urls",
@@ -52,17 +52,17 @@
                         ],
                         "volumeMounts": [
                             {
-                                "name": "tmp-pv",
-                                "mountPath": "/tmp/{{$.NAMESPACE}}/etcd"
+                                "name": "etcd-data",
+                                "mountPath": "/data/etcd"
                             }
                         ]
                     }
                 ],
                 "volumes": [
                     {
-                        "name": "tmp-pv",
+                        "name": "etcd-data",
                         "persistentVolumeClaim": {
-                            "claimName": "tmp"
+                            "claimName": "etcd-data"
                         }
                     }
                 ]
