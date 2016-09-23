@@ -46,13 +46,15 @@ build:
 
 docker-builder:
 	docker build -f Dockerfile -t dummy-builder .
+	docker rm -f dummy-builder-container
+	docker run --name dummy-builder-container \
+		-v /Users/antoine/gopath/src/github.com/apourchet/dummy:/go/src/github.com/apourchet/dummy \
+		-d \
+		dummy-builder /bin/sh -c "while true; do sleep 10; done"
 
-docker-build: docker-builder
-	docker run --name dummy-builder-container dummy-builder make build
-	docker cp dummy-builder-container:/go/src/github.com/apourchet/dummy/containers/hellogo/build/ ./containers/hellogo/
-	docker cp dummy-builder-container:/go/src/github.com/apourchet/dummy/containers/hermes/build/ ./containers/hermes/
+docker-build:
+	docker exec dummy-builder-container make build
 	make -C containers build-docker
-	docker rm dummy-builder-container
 
 kup:
 	kubectl config set-cluster $(CLUSTER_NAME) --server http://$(DOCKER_MACHINE_IP):8080
@@ -89,11 +91,9 @@ local-certs:
 build-%:
 	make -C containers/$* build
 
-docker-build-%: docker-builder
-	docker run --name dummy-builder-container dummy-builder make build-$*
-	docker cp dummy-builder-container:/go/src/github.com/apourchet/dummy/containers/$*/build/ ./containers/$*/
+docker-build-%:
+	docker exec dummy-builder-container make build-$*
 	make -C containers/$* build-docker
-	docker rm dummy-builder-container
 
 recall-%:
 	kubectl get deployments | cut -f 1 -d ' ' | tail -n +2 | grep $* | xargs kubectl delete deployments
