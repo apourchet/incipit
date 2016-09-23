@@ -1,0 +1,36 @@
+{
+    "apiVersion": "extensions/v1beta1", 
+    "kind": "Deployment", 
+    "metadata": {
+        "namespace": "{{.NAMESPACE}}", 
+        "name": "hermes"
+    },
+    "spec": {
+        "replicas": 2,
+        "template": {
+            "spec": {
+                "containers": [
+                    {
+                        "image": "gcr.io/dummy-143017/hermes:v1", 
+                        "name": "hermes", 
+                        "ports": [
+                            {
+                                "containerPort": 8080
+                            }
+                        ]
+                    }
+                ]
+            }, 
+            "metadata": {
+                "labels": {
+                    "hermes": "true"
+                }
+            }
+        }, 
+        "selector": {
+            "matchLabels": {
+                "hermes": "true"
+            }
+        }
+    }
+}

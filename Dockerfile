@@ -10,6 +10,7 @@ RUN apt-get install -y jq
 RUN apt-get clean -qq
 
 RUN go get github.com/tools/godep
+RUN go get -u github.com/kardianos/govendor
 RUN ln -s /go/src/github.com/apourchet/dummy /src
 
 ADD . /go/src/github.com/apourchet/dummy

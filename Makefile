@@ -40,6 +40,7 @@ docker-destroy-vm:
 	docker-machine rm $(DOCKER_MACHINE_NAME)
 
 # Command that should only be run from within a container
+# The following are general build targets
 build:
 	make -C containers build
 
@@ -47,10 +48,11 @@ docker-builder:
 	docker build -f Dockerfile -t dummy-builder .
 
 docker-build: docker-builder
-	docker run --name hellogo-builder dummy-builder make build
-	docker cp hellogo-builder:/go/src/github.com/apourchet/dummy/containers/hellogo/build/ ./containers/hellogo/
+	docker run --name dummy-builder-container dummy-builder make build
+	docker cp dummy-builder-container:/go/src/github.com/apourchet/dummy/containers/hellogo/build/ ./containers/hellogo/
+	docker cp dummy-builder-container:/go/src/github.com/apourchet/dummy/containers/hermes/build/ ./containers/hermes/
 	make -C containers build-docker
-	docker rm hellogo-builder
+	docker rm dummy-builder-container
 
 kup:
 	kubectl config set-cluster $(CLUSTER_NAME) --server http://$(DOCKER_MACHINE_IP):8080
@@ -83,6 +85,25 @@ ui:
 local-certs:
 	openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./misc/local-server.key -out ./misc/local-server.crt -subj "/CN=$(DOCKER_MACHINE_NAME).machine"
 
+# Service specific targets
+build-%:
+	make -C containers/$* build
+
+docker-build-%: docker-builder
+	docker run --name dummy-builder-container dummy-builder make build-$*
+	docker cp dummy-builder-container:/go/src/github.com/apourchet/dummy/containers/$*/build/ ./containers/$*/
+	make -C containers/$* build-docker
+	docker rm dummy-builder-container
+
+recall-%:
+	kubectl get deployments | cut -f 1 -d ' ' | tail -n +2 | grep $* | xargs kubectl delete deployments
+
+deploy-%:
+	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./resources/$*/*.json | kubectl apply -f -
+	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./deployments/$*/*.json | kubectl apply -f -
+
+redeploy-%: 
+	make recall-$* deploy-$*
 
 # GOOGLE SPECIFIC TARGETS
 gcloud-kup:

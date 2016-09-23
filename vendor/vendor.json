@@ -1,0 +1,47 @@
+{
+	"comment": "",
+	"ignore": "",
+	"package": [
+		{
+			"path": "context",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "rSJUKPS27prZ6GlS+zHaNHW6TtY=",
+			"path": "github.com/coreos/etcd/client",
+			"revision": "51aa2204498c6fa1ae7ea7b06c1fa6607dc5a1d1",
+			"revisionTime": "2016-09-22T22:08:50Z"
+		},
+		{
+			"checksumSHA1": "eQeBivfiHELecANXiU9vYfFdjQU=",
+			"path": "github.com/coreos/etcd/pkg/pathutil",
+			"revision": "51aa2204498c6fa1ae7ea7b06c1fa6607dc5a1d1",
+			"revisionTime": "2016-09-22T22:08:50Z"
+		},
+		{
+			"checksumSHA1": "j/KjM2OIBuFTfLxsHZZg2e7fy+I=",
+			"path": "github.com/coreos/etcd/pkg/testutil",
+			"revision": "51aa2204498c6fa1ae7ea7b06c1fa6607dc5a1d1",
+			"revisionTime": "2016-09-22T22:08:50Z"
+		},
+		{
+			"checksumSHA1": "qd+I6M6ot7HOpADC8KNrW9xSurQ=",
+			"path": "github.com/coreos/etcd/pkg/types",
+			"revision": "51aa2204498c6fa1ae7ea7b06c1fa6607dc5a1d1",
+			"revisionTime": "2016-09-22T22:08:50Z"
+		},
+		{
+			"checksumSHA1": "NSsNJMNfl0agqnAoTNntSE64h0E=",
+			"path": "github.com/ugorji/go/codec",
+			"revision": "b7eff9abce531d6aeda923e759ae668e56601d21",
+			"revisionTime": "2016-09-21T01:57:43Z"
+		},
+		{
+			"checksumSHA1": "88lxkrVVZyBqOBOFnNMBwEexiLY=",
+			"path": "golang.org/x/net/context",
+			"revision": "6d3beaea10370160dea67f5c9327ed791afd5389",
+			"revisionTime": "2016-09-11T09:39:33Z"
+		}
+	],
+	"rootPath": "github.com/apourchet/dummy"
+}
