@@ -4,12 +4,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
-	"time"
 
 	"golang.org/x/net/context"
 
-	"github.com/coreos/etcd/client"
+	"github.com/apourchet/dummy/lib/etcd"
 )
 
 func helloGo(rw http.ResponseWriter, req *http.Request) {
@@ -17,24 +15,16 @@ func helloGo(rw http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-	fmt.Println("Starting the server on 8080")
+	log.Println("Starting the server on 8080")
 	http.HandleFunc("/hellogo", helloGo)
 
-	etcdClientAddr := "http://" + os.Getenv("ETCD_CLIENT_SERVICE_HOST") + ":" + os.Getenv("ETCD_CLIENT_SERVICE_PORT")
-	cfg := client.Config{
-		Endpoints:               []string{etcdClientAddr},
-		Transport:               client.DefaultTransport,
-		HeaderTimeoutPerRequest: time.Second,
-	}
-
-	c, err := client.New(cfg)
+	etcd, err := etcd.GetK8sDefaultClient()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	kapi := client.NewKeysAPI(c)
 	log.Print("Setting '/foo' key with 'bar' value")
-	resp, err := kapi.Set(context.Background(), "/foo", "bar", nil)
+	resp, err := etcd.Set(context.Background(), "/foo", "bar", nil)
 	if err != nil {
 		log.Fatal(err)
 	} else {
