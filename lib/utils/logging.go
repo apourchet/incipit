@@ -20,6 +20,10 @@ func Info(s string, args ...interface{}) {
 	INFO.Output(2, fmt.Sprintf(s, args...))
 }
 
+func Error(s string, args ...interface{}) {
+	ERROR.Output(2, fmt.Sprintf(s, args...))
+}
+
 func Fatal(args ...interface{}) {
 	ERROR.Fatal(args)
 }

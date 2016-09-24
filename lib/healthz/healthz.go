@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	DEFAULT_PORT     = 10000
-	DEFAULT_ENDPOINT = "/healthz"
+	DefaultPort     = 10000
+	DefaultEndpoint = "/healthz"
 )
 
 func healthCheck(ctx *gin.Context) {
@@ -19,8 +19,8 @@ func healthCheck(ctx *gin.Context) {
 // Spawns a server that returns 200 on host:{port}/{base}/healthz
 func SpawnHealthCheck(port int) {
 	engine := gin.New()
-	engine.GET(DEFAULT_ENDPOINT, healthCheck)
+	engine.GET(DefaultEndpoint, healthCheck)
 	go engine.Run(fmt.Sprintf(":%d", port))
 
-	utils.Info("Healthz Ready at :%d%s\n", port, DEFAULT_ENDPOINT)
+	utils.Info("Healthz Ready at :%d%s\n", port, DefaultEndpoint)
 }

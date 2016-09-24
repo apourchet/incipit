@@ -2,3 +2,6 @@ config.json
 tools/tools
 .commands
 build/
+*
+!/**/
+!*.*

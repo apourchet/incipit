@@ -13,7 +13,7 @@ KUBE_CONFIG='../../kubeconfigs/local.json'
 .PHONY: build
 
 build:
-	CGO_ENABLED=0 go build -i -ldflags "-s" -installsuffix cgo -o build/$(MICROSERVICE) server.go
+	CGO_ENABLED=0 go build -i -ldflags "-s" -installsuffix cgo -o build/$(MICROSERVICE) cmd/server.go
 
 build-docker:
 	docker build -t $(DOCKER_IMGNAME) .

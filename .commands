@@ -1,0 +1,10 @@
+# From scratch
+make docker-create-vm
+eval (docker-machine env dummy)
+make docker-builder
+make docker-build
+make kup
+make resources
+make deployments
+sleep 10
+make test
