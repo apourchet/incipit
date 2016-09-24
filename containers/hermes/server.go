@@ -18,7 +18,7 @@ func helloHermes(rw http.ResponseWriter, req *http.Request) {
 
 func main() {
 	utils.Info("Starting the server on 8080")
-	http.HandleFunc("/", helloHermes)
+	http.HandleFunc("/hermes", helloHermes)
 
 	etcd, err := etcd.GetK8sDefaultClient()
 	if err != nil {

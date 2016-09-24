@@ -9,6 +9,7 @@ module KubeExpose
         `kubectl patch service #{servicename} --type='json' \
         -p='[{"op": "replace", "path": "/spec/type", "value": "NodePort"},
             {"op": "replace", "path": "/spec/ports/0/nodePort", "value": "#{port}"}]'`
+        sleep(0.5)
         return (if $?.success? then port else 0 end)
     end
 

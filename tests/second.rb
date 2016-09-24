@@ -12,7 +12,6 @@ if $?.success? then print "SUCCESS\n".colorize(:green) else print "FAILED\n".col
 
 print ">> Testing hermes: "
 port = KubeExpose.expose('hermes')
-sleep(0.5)
-`curl -s http://dummy.machine:#{port}/ -k`
+`curl -s http://dummy.machine:#{port}/hermes -k`
 if $?.success? then print "SUCCESS\n".colorize(:green) else print "FAILED\n".colorize(:red) end
 KubeExpose.hide('hermes')
