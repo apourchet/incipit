@@ -8,6 +8,8 @@ import (
 	"golang.org/x/net/context"
 
 	"github.com/apourchet/dummy/lib/etcd"
+	"github.com/apourchet/dummy/lib/healthz"
+	"github.com/apourchet/dummy/lib/utils"
 )
 
 func helloGo(rw http.ResponseWriter, req *http.Request) {
@@ -15,7 +17,7 @@ func helloGo(rw http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-	log.Println("Starting the server on 8080")
+	utils.Info("Starting the server on 8080")
 	http.HandleFunc("/hellogo", helloGo)
 
 	etcd, err := etcd.GetK8sDefaultClient()
@@ -23,13 +25,14 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Print("Setting '/foo' key with 'bar' value")
+	utils.Info("Setting '/foo' key with 'bar' value")
 	resp, err := etcd.Set(context.Background(), "/foo", "bar", nil)
 	if err != nil {
-		log.Fatal(err)
+		utils.Fatal(err)
 	} else {
-		log.Printf("Set is done. Metadata is %q\n", resp)
+		utils.Info("Set is done. Metadata is %q\n", resp)
 	}
 
+	healthz.SpawnHealthCheck("/hellogo", healthz.DEFAULT_PORT)
 	http.ListenAndServe(":8080", nil)
 }
