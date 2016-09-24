@@ -12,13 +12,13 @@ import (
 	"github.com/apourchet/dummy/lib/utils"
 )
 
-func helloGo(rw http.ResponseWriter, req *http.Request) {
-	fmt.Fprintf(rw, "Hello Go!")
+func helloHermes(rw http.ResponseWriter, req *http.Request) {
+	fmt.Fprintf(rw, "Hello Hermes!")
 }
 
 func main() {
 	utils.Info("Starting the server on 8080")
-	http.HandleFunc("/hellogo", helloGo)
+	http.HandleFunc("/", helloHermes)
 
 	etcd, err := etcd.GetK8sDefaultClient()
 	if err != nil {
@@ -33,6 +33,6 @@ func main() {
 		utils.Info("Set is done. Metadata is %q\n", resp)
 	}
 
-	healthz.SpawnHealthCheck("/hellogo", healthz.DEFAULT_PORT)
+	healthz.SpawnHealthCheck(healthz.DEFAULT_PORT)
 	http.ListenAndServe(":8080", nil)
 }

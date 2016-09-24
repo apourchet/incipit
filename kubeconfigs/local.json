@@ -1,8 +1,10 @@
 {
     "NAMESPACE": "dummy",
-    "NODEIP": "127.0.0.1",
+
     "HELLO_REPLICAS": "3",
+
     "ETCD_NODES": 3,
+
     "INGRESS_HOSTNAME": "dummy.machine",
     "INGRESS_HTTP_PORT": "30001",
     "INGRESS_HTTPS_PORT": "30002",
