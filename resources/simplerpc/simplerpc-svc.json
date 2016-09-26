@@ -3,7 +3,7 @@
     "kind": "Service", 
     "metadata": {
         "namespace": "{{$.NAMESPACE}}", 
-        "name": "hermes"
+        "name": "simplerpc"
     },
     "spec": {
         "type": "ClusterIP", 
@@ -16,7 +16,7 @@
             }
         ], 
         "selector": {
-            "hermes": "true"
+            "simplerpc": "true"
         }
     }
 }

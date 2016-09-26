@@ -3,7 +3,7 @@
     "kind": "Deployment", 
     "metadata": {
         "namespace": "{{.NAMESPACE}}", 
-        "name": "hermes"
+        "name": "simplerpc"
     },
     "spec": {
         "replicas": 2,
@@ -11,8 +11,8 @@
             "spec": {
                 "containers": [
                     {
-                        "image": "gcr.io/dummy-143017/hermes:v1", 
-                        "name": "hermes", 
+                        "image": "gcr.io/dummy-143017/simplerpc:v1", 
+                        "name": "simplerpc", 
                         "ports": [
                             {
                                 "containerPort": 8080
@@ -23,13 +23,13 @@
             }, 
             "metadata": {
                 "labels": {
-                    "hermes": "true"
+                    "simplerpc": "true"
                 }
             }
         }, 
         "selector": {
             "matchLabels": {
-                "hermes": "true"
+                "simplerpc": "true"
             }
         }
     }

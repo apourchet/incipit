@@ -34,7 +34,7 @@ func helloPost(c *gin.Context) {
 		return
 	}
 	utils.Info("Successfully inserted into etcd")
-	c.JSON(http.StatusOK, gin.H{"message": "Hello Hermes!"})
+	c.JSON(http.StatusOK, gin.H{"message": "Hello Simplerpc!"})
 }
 
 func helloGet(c *gin.Context) {
