@@ -3,6 +3,7 @@ package etcd
 import (
 	"time"
 
+	"github.com/apourchet/dummy/lib/logging"
 	"github.com/apourchet/dummy/lib/utils"
 	etcdClient "github.com/coreos/etcd/client"
 )
@@ -36,6 +37,6 @@ func GetK8sDefaultClient() (etcdClient.KeysAPI, error) {
 // if there was an error
 func GetK8sDefaultClientFatal() etcdClient.KeysAPI {
 	c, err := GetK8sDefaultClient()
-	utils.FatalError(err)
+	logging.FatalError(err)
 	return c
 }

@@ -1,4 +1,4 @@
-package utils
+package logging
 
 import (
 	"fmt"
@@ -26,4 +26,10 @@ func Error(s string, args ...interface{}) {
 
 func Fatal(args ...interface{}) {
 	ERROR.Fatal(args)
+}
+
+func FatalError(err error) {
+	if err != nil {
+		Fatal(err)
+	}
 }

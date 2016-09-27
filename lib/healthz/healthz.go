@@ -3,7 +3,7 @@ package healthz
 import (
 	"fmt"
 
-	"github.com/apourchet/dummy/lib/utils"
+	"github.com/apourchet/dummy/lib/logging"
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,5 +22,5 @@ func SpawnHealthCheck(port int) {
 	engine.GET(DefaultEndpoint, healthCheck)
 	go engine.Run(fmt.Sprintf(":%d", port))
 
-	utils.Info("Healthz Ready at :%d%s\n", port, DefaultEndpoint)
+	logging.Info("Healthz Ready at :%d%s\n", port, DefaultEndpoint)
 }

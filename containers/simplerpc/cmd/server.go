@@ -14,6 +14,7 @@ import (
 
 	"github.com/apourchet/dummy/lib/etcd"
 	"github.com/apourchet/dummy/lib/healthz"
+	"github.com/apourchet/dummy/lib/logging"
 	"github.com/apourchet/dummy/lib/utils"
 	"github.com/apourchet/hermes"
 	"github.com/gin-gonic/gin"
@@ -45,10 +46,10 @@ func NewPutKeyOut() interface{} { return &PutKeyOut{} }
 func (s *SimpleRpc) PutKey(c *gin.Context, in *PutKeyIn, out *PutKeyOut) (int, error) {
 	_, err := kapi.Set(context.Background(), in.Key, in.Value, nil)
 	if err != nil {
-		utils.Error("Failed to insert into etcd: %v", err)
+		logging.Error("Failed to insert into etcd: %v", err)
 		return http.StatusInternalServerError, err
 	}
-	utils.Info("Successfully inserted into etcd")
+	logging.Info("Successfully inserted into etcd")
 	out.Ok = true
 	return http.StatusOK, nil
 }
@@ -67,10 +68,10 @@ func NewGetKeyOut() interface{} { return &GetKeyOut{} }
 func (s *SimpleRpc) GetKey(c *gin.Context, in *GetKeyIn, out *GetKeyOut) (int, error) {
 	resp, err := kapi.Get(context.Background(), in.Key, nil)
 	if err != nil {
-		utils.Error("Failed to get from etcd: %v", err)
+		logging.Error("Failed to get from etcd: %v", err)
 		return http.StatusInternalServerError, err
 	}
-	utils.Info("Successfully retrieved from etcd")
+	logging.Info("Successfully retrieved from etcd")
 	out.Value = resp.Node.Value
 	return http.StatusOK, nil
 }
