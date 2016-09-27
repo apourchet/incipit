@@ -15,37 +15,76 @@ import (
 	"github.com/apourchet/dummy/lib/etcd"
 	"github.com/apourchet/dummy/lib/healthz"
 	"github.com/apourchet/dummy/lib/utils"
+	"github.com/apourchet/hermes"
 	"github.com/gin-gonic/gin"
 )
 
 const (
-	RpcPort = 8080
+	ServiceName = "simplerpc"
+	RpcPort     = 8080
 )
 
 var (
 	kapi etcd_client.KeysAPI
 )
 
-func helloPost(c *gin.Context) {
-	_, err := kapi.Set(context.Background(), "/foo", "bar", nil)
-	if err != nil {
-		utils.Error("Failed to insert into etcd: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	utils.Info("Successfully inserted into etcd")
-	c.JSON(http.StatusOK, gin.H{"message": "Hello Simplerpc!"})
+type SimpleRpc struct{}
+
+// PutKey
+type PutKeyIn struct {
+	Key   string
+	Value string
+}
+type PutKeyOut struct {
+	Ok bool
 }
 
-func helloGet(c *gin.Context) {
-	resp, err := kapi.Get(context.Background(), "/foo", nil)
+func NewPutKeyIn() interface{}  { return &PutKeyIn{} }
+func NewPutKeyOut() interface{} { return &PutKeyOut{} }
+
+func (s *SimpleRpc) PutKey(c *gin.Context, in *PutKeyIn, out *PutKeyOut) (int, error) {
+	_, err := kapi.Set(context.Background(), in.Key, in.Value, nil)
+	if err != nil {
+		utils.Error("Failed to insert into etcd: %v", err)
+		return http.StatusInternalServerError, err
+	}
+	utils.Info("Successfully inserted into etcd")
+	out.Ok = true
+	return http.StatusOK, nil
+}
+
+// GetKey
+type GetKeyIn struct {
+	Key string
+}
+type GetKeyOut struct {
+	Value string
+}
+
+func NewGetKeyIn() interface{}  { return &GetKeyIn{} }
+func NewGetKeyOut() interface{} { return &GetKeyOut{} }
+
+func (s *SimpleRpc) GetKey(c *gin.Context, in *GetKeyIn, out *GetKeyOut) (int, error) {
+	resp, err := kapi.Get(context.Background(), in.Key, nil)
 	if err != nil {
 		utils.Error("Failed to get from etcd: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
+		return http.StatusInternalServerError, err
 	}
 	utils.Info("Successfully retrieved from etcd")
-	c.JSON(http.StatusOK, gin.H{"value": fmt.Sprintf("%q", resp.Node.Value)})
+	out.Value = resp.Node.Value
+	return http.StatusOK, nil
+}
+
+// Implement hermes.Serviceable
+func (s *SimpleRpc) Host() string {
+	return utils.GetK8sAddress(ServiceName)
+}
+
+func (s *SimpleRpc) Endpoints() hermes.EndpointMap {
+	return hermes.EndpointMap{
+		hermes.Endpoint{"PutKey", "POST", "/rpc/v1/simplerpc", NewPutKeyIn, NewPutKeyOut},
+		hermes.Endpoint{"GetKey", "GET", "/rpc/v1/simplerpc", NewGetKeyIn, NewGetKeyOut},
+	}
 }
 
 func main() {
@@ -53,7 +92,6 @@ func main() {
 	healthz.SpawnHealthCheck(healthz.DefaultPort)
 
 	engine := gin.New()
-	engine.POST("/rpc/v1/hermes", helloPost)
-	engine.GET("/rpc/v1/hermes", helloGet)
+	hermes.InitService(&SimpleRpc{}).Serve(engine)
 	engine.Run(fmt.Sprintf(":%d", RpcPort))
 }

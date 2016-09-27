@@ -43,6 +43,12 @@
 			"revisionTime": "2016-09-23T20:01:57Z"
 		},
 		{
+			"checksumSHA1": "GnaePxXvNfhnkGfX6rQ3OF7y8RA=",
+			"path": "github.com/apourchet/hermes",
+			"revision": "14078ac13d3c24e386d5e1eb89463d65339d079d",
+			"revisionTime": "2016-09-26T23:16:16Z"
+		},
+		{
 			"checksumSHA1": "rSJUKPS27prZ6GlS+zHaNHW6TtY=",
 			"path": "github.com/coreos/etcd/client",
 			"revision": "51aa2204498c6fa1ae7ea7b06c1fa6607dc5a1d1",

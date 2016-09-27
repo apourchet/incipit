@@ -46,7 +46,7 @@ build:
 
 docker-builder:
 	docker build -f Dockerfile -t dummy-builder .
-	docker rm -f dummy-builder-container
+	-docker rm dummy-builder-container -f
 	docker run --name dummy-builder-container \
 		-v /Users/antoine/gopath/src/github.com/apourchet/dummy:/go/src/github.com/apourchet/dummy \
 		-d \
