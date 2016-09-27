@@ -79,7 +79,7 @@ recall:
 	kubectl get deployments | cut -f 1 -d ' ' | tail -n +2 | xargs kubectl delete deployments
 
 test:
-	ruby tests/second.rb
+	ruby tests/k8s-unit.rb
 
 ui:
 	kubectl create -f https://rawgit.com/kubernetes/dashboard/master/src/deploy/kubernetes-dashboard.yaml
