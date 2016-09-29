@@ -18,8 +18,8 @@
                         "image": "gcr.io/google_containers/nginx-ingress-controller:0.8.2", 
                         "args": [
                             "/nginx-ingress-controller", 
-                            "--default-backend-service=dummy/default-http-backend", 
-                            "--watch-namespace=dummy", 
+                            "--default-backend-service=incipit/default-http-backend", 
+                            "--watch-namespace=incipit", 
                             "--v=3", 
                             "--sync-period=5s"
                         ],

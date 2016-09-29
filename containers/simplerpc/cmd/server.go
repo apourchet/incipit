@@ -12,10 +12,10 @@ import (
 
 	etcd_client "github.com/coreos/etcd/client"
 
-	"github.com/apourchet/dummy/lib/etcd"
-	"github.com/apourchet/dummy/lib/healthz"
-	"github.com/apourchet/dummy/lib/logging"
-	"github.com/apourchet/dummy/lib/utils"
+	"github.com/apourchet/incipit/lib/etcd"
+	"github.com/apourchet/incipit/lib/healthz"
+	"github.com/apourchet/incipit/lib/logging"
+	"github.com/apourchet/incipit/lib/utils"
 	"github.com/apourchet/hermes"
 	"github.com/gin-gonic/gin"
 )

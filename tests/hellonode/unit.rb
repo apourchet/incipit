@@ -19,7 +19,7 @@ module HelloNode
     end
 
     def HelloNode.hello
-        uri = URI "https://dummy.machine:#{@@port}/hellonode"
+        uri = URI "https://incipit.machine:#{@@port}/hellonode"
         req = Net::HTTP::Post.new uri
         options = {:use_ssl => true, :verify_mode => OpenSSL::SSL::VERIFY_NONE}
         res = Net::HTTP.start(uri.hostname, uri.port, options) do |http|

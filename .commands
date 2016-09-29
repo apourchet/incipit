@@ -1,6 +1,6 @@
 # From scratch
 make docker-create-vm
-eval (docker-machine env dummy)
+eval (docker-machine env incipit)
 make docker-builder
 make docker-build
 make kup

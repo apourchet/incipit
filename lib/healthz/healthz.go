@@ -3,7 +3,7 @@ package healthz
 import (
 	"fmt"
 
-	"github.com/apourchet/dummy/lib/logging"
+	"github.com/apourchet/incipit/lib/logging"
 	"github.com/gin-gonic/gin"
 )
 

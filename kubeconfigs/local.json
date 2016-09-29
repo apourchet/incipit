@@ -1,13 +1,16 @@
 {
-    "NAMESPACE": "dummy",
+    "NAMESPACE": "incipit",
 
-    "HELLO_REPLICAS": "3",
+    "HELLO_REPLICAS": "1",
+    "SIMPLERPC_REPLICAS": "1",
 
     "ETCD_NODES": 3,
 
-    "INGRESS_HOSTNAME": "dummy.machine",
+    "INGRESS_HOSTNAME": "incipit.machine",
     "INGRESS_HTTP_PORT": "30001",
     "INGRESS_HTTPS_PORT": "30002",
     "SERVER_CERT": "misc/local-server.crt",
-    "SERVER_KEY": "misc/local-server.key"
+    "SERVER_KEY": "misc/local-server.key",
+
+    "DOCKER_REPO": "gcr.io/dummy-143017"
 }

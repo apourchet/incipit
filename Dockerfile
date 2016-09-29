@@ -10,13 +10,13 @@ RUN apt-get clean -qq
 
 RUN go get github.com/tools/godep
 RUN go get -u github.com/kardianos/govendor
-RUN ln -s /go/src/github.com/apourchet/dummy /src
+RUN ln -s /go/src/github.com/apourchet/incipit /src
 
-# ADD . /go/src/github.com/apourchet/dummy
-VOLUME ["/go/src/github.com/apourchet/dummy"]
+# ADD . /go/src/github.com/apourchet/incipit
+VOLUME ["/go/src/github.com/apourchet/incipit"]
 
 RUN useradd -u 1000 -m ubuntu &&  echo "ubuntu ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 ENV HOME /root
 ENV IN_DOCKER true
-WORKDIR /go/src/github.com/apourchet/dummy
+WORKDIR /go/src/github.com/apourchet/incipit

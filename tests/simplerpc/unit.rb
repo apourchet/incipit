@@ -19,7 +19,7 @@ module SimpleRpc
     end
 
     def SimpleRpc.putKey
-        uri = URI "http://dummy.machine:#{@@port}/rpc/v1/simplerpc"
+        uri = URI "http://incipit.machine:#{@@port}/rpc/v1/simplerpc"
         req = Net::HTTP::Post.new uri
         req.body = {'key'=>'foo', 'value'=>'bar'}.to_json
         res = Net::HTTP.start uri.hostname, uri.port do |http|
@@ -29,7 +29,7 @@ module SimpleRpc
     end
 
     def SimpleRpc.getKey
-        uri = URI "http://dummy.machine:#{@@port}/rpc/v1/simplerpc"
+        uri = URI "http://incipit.machine:#{@@port}/rpc/v1/simplerpc"
         req = Net::HTTP::Get.new uri
         req.body = {'key'=>'foo'}.to_json
         res = Net::HTTP.start uri.hostname, uri.port do |http|

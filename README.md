@@ -1,4 +1,4 @@
-# dummy
+# incipit
 A boilerplate for a scalable Kubernetes/Docker backed infrastructure.
 
 # Features

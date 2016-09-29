@@ -39,7 +39,7 @@
                             "new"
                         ],
                         "image": "quay.io/coreos/etcd:latest",
-                        "imagePullPolicy": "Never",
+                        "imagePullPolicy": "IfNotPresent",
                         "ports": [
                             {
                                 "name": "client",

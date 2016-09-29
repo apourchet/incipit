@@ -11,7 +11,7 @@
             "spec": {
                 "containers": [
                     {
-                        "image": "gcr.io/dummy-143017/hellogo:v1", 
+                        "image": "{{$.DOCKER_REPO}}/hellogo:v1", 
                         "name": "hellogo", 
                         "ports": [
                             {
@@ -20,7 +20,7 @@
                         ]
                     }, 
                     {
-                        "image": "gcr.io/dummy-143017/hellonode:v1", 
+                        "image": "{{$.DOCKER_REPO}}/hellonode:v1", 
                         "name": "hellonode", 
                         "ports": [
                             {

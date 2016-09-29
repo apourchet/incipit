@@ -6,17 +6,15 @@
         "name": "simplerpc"
     },
     "spec": {
-        "replicas": 2,
+        "replicas": {{$.SIMPLERPC_REPLICAS}},
         "template": {
             "spec": {
                 "containers": [
                     {
-                        "image": "gcr.io/dummy-143017/simplerpc:v1", 
+                        "image": "{{$.DOCKER_REPO}}/simplerpc:v1", 
                         "name": "simplerpc", 
                         "ports": [
-                            {
-                                "containerPort": 8080
-                            }
+                            { "containerPort": 8080 }
                         ]
                     }
                 ]

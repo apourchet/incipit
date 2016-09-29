@@ -3,8 +3,8 @@ package etcd
 import (
 	"time"
 
-	"github.com/apourchet/dummy/lib/logging"
-	"github.com/apourchet/dummy/lib/utils"
+	"github.com/apourchet/incipit/lib/logging"
+	"github.com/apourchet/incipit/lib/utils"
 	etcdClient "github.com/coreos/etcd/client"
 )
 

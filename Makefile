@@ -17,6 +17,8 @@ DOWNCMD = "mount | grep -o 'on /var/lib/kubelet.* type' | cut -c 4- | rev | cut 
 # DOCKER THINGS
 DOCKER_MACHINE_NAME = $(PROJECT_NAME)
 DOCKER_MACHINE_IP = $(shell docker-machine ip $(DOCKER_MACHINE_NAME))
+DOCKER_BUILDER_IMAGENAME = $(PROJECT_NAME)-builder-image
+DOCKER_BUILDER_CONTAINER = $(DOCKER_BUILDER_IMAGENAME)-container
 ETC_HOST_HACK_UNDO = sudo sed -i '' "/$(DOCKER_MACHINE_NAME)\.machine/d" /etc/hosts
 ETC_HOST_HACK_DO = 
 
@@ -45,15 +47,15 @@ build:
 	make -C containers build
 
 docker-builder:
-	docker build -f Dockerfile -t dummy-builder .
-	-docker rm dummy-builder-container -f
-	docker run --name dummy-builder-container \
-		-v /Users/antoine/gopath/src/github.com/apourchet/dummy:/go/src/github.com/apourchet/dummy \
+	docker build -f Dockerfile -t $(DOCKER_BUILDER_IMAGENAME) .
+	-docker rm $(DOCKER_BUILDER_CONTAINER) -f
+	docker run --name $(DOCKER_BUILDER_CONTAINER) \
+		-v /Users/antoine/gopath/src/github.com/apourchet/incipit:/go/src/github.com/apourchet/incipit \
 		-d \
-		dummy-builder /bin/sh -c "while true; do sleep 10; done"
+		$(DOCKER_BUILDER_IMAGENAME) /bin/sh -c "while true; do sleep 10; done"
 
 docker-build:
-	docker exec dummy-builder-container make build
+	docker exec $(DOCKER_BUILDER_CONTAINER) make build
 	make -C containers build-docker
 
 kup:
@@ -66,7 +68,8 @@ kup:
 
 kdown:
 	docker-compose -f kubemaster/docker-compose.yaml down
-	docker-machine ssh $(PROJECT_NAME) $(DOWNCMD)
+	docker-machine ssh $(DOCKER_MACHINE_NAME) "sudo rm -rf /etcd-data"
+	docker-machine ssh $(DOCKER_MACHINE_NAME) $(DOWNCMD)
 	docker ps -a -f "name = k8s_" -q | xargs docker rm -f
 
 resources:
@@ -92,7 +95,7 @@ build-%:
 	make -C containers/$* build
 
 docker-build-%:
-	docker exec dummy-builder-container make build-$*
+	docker exec $(DOCKER_BUILDER_CONTAINER) make build-$*
 	make -C containers/$* build-docker
 
 recall-%:
