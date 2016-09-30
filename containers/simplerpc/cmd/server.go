@@ -12,36 +12,22 @@ import (
 
 	etcd_client "github.com/coreos/etcd/client"
 
+	"github.com/apourchet/hermes"
 	"github.com/apourchet/incipit/lib/etcd"
 	"github.com/apourchet/incipit/lib/healthz"
 	"github.com/apourchet/incipit/lib/logging"
-	"github.com/apourchet/incipit/lib/utils"
-	"github.com/apourchet/hermes"
 	"github.com/gin-gonic/gin"
-)
 
-const (
-	ServiceName = "simplerpc"
-	RpcPort     = 8080
+	. "github.com/apourchet/incipit/lib/simplerpc"
 )
 
 var (
 	kapi etcd_client.KeysAPI
 )
 
-type SimpleRpc struct{}
-
-// PutKey
-type PutKeyIn struct {
-	Key   string
-	Value string
+type SimpleRpc struct {
+	ServiceDefinition
 }
-type PutKeyOut struct {
-	Ok bool
-}
-
-func NewPutKeyIn() interface{}  { return &PutKeyIn{} }
-func NewPutKeyOut() interface{} { return &PutKeyOut{} }
 
 func (s *SimpleRpc) PutKey(c *gin.Context, in *PutKeyIn, out *PutKeyOut) (int, error) {
 	_, err := kapi.Set(context.Background(), in.Key, in.Value, nil)
@@ -54,17 +40,6 @@ func (s *SimpleRpc) PutKey(c *gin.Context, in *PutKeyIn, out *PutKeyOut) (int, e
 	return http.StatusOK, nil
 }
 
-// GetKey
-type GetKeyIn struct {
-	Key string
-}
-type GetKeyOut struct {
-	Value string
-}
-
-func NewGetKeyIn() interface{}  { return &GetKeyIn{} }
-func NewGetKeyOut() interface{} { return &GetKeyOut{} }
-
 func (s *SimpleRpc) GetKey(c *gin.Context, in *GetKeyIn, out *GetKeyOut) (int, error) {
 	resp, err := kapi.Get(context.Background(), in.Key, nil)
 	if err != nil {
@@ -74,18 +49,6 @@ func (s *SimpleRpc) GetKey(c *gin.Context, in *GetKeyIn, out *GetKeyOut) (int, e
 	logging.Info("Successfully retrieved from etcd")
 	out.Value = resp.Node.Value
 	return http.StatusOK, nil
-}
-
-// Implement hermes.Serviceable
-func (s *SimpleRpc) Host() string {
-	return utils.GetK8sAddress(ServiceName)
-}
-
-func (s *SimpleRpc) Endpoints() hermes.EndpointMap {
-	return hermes.EndpointMap{
-		hermes.Endpoint{"PutKey", "POST", "/rpc/v1/simplerpc", NewPutKeyIn, NewPutKeyOut},
-		hermes.Endpoint{"GetKey", "GET", "/rpc/v1/simplerpc", NewGetKeyIn, NewGetKeyOut},
-	}
 }
 
 func main() {

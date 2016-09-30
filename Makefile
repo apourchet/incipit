@@ -23,7 +23,7 @@ ETC_HOST_HACK_UNDO = sudo sed -i '' "/$(DOCKER_MACHINE_NAME)\.machine/d" /etc/ho
 ETC_HOST_HACK_DO = 
 
 # TOOLS
-KUBE_CONFIG_TOOL = ./tools/kube-config.go
+KUBE_CONFIG_TOOL = ./tools/kubeconfig/kubeconfig.go
 KUBE_CONFIG = ./kubeconfigs/local.json
 
 .PHONY: resources deployments docker-builder
