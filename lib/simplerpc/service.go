@@ -16,7 +16,20 @@ type SimpleRpcService interface {
 	GetKey(*gin.Context, *GetKeyIn, *GetKeyOut) (int, error)
 }
 
+// Implements hermes.Serviceable
 type ServiceDefinition struct{}
+
+// Implementation
+func (s *ServiceDefinition) Host() string {
+	return utils.GetK8sAddress(ServiceName)
+}
+
+func (s *ServiceDefinition) Endpoints() hermes.EndpointMap {
+	return hermes.EndpointMap{
+		hermes.Endpoint{"PutKey", "POST", "/rpc/v1/simplerpc", NewPutKeyIn, NewPutKeyOut},
+		hermes.Endpoint{"GetKey", "GET", "/rpc/v1/simplerpc", NewGetKeyIn, NewGetKeyOut},
+	}
+}
 
 // PutKey
 type PutKeyIn struct {
@@ -40,15 +53,3 @@ type GetKeyOut struct {
 
 func NewGetKeyIn() interface{}  { return &GetKeyIn{} }
 func NewGetKeyOut() interface{} { return &GetKeyOut{} }
-
-// Implementation
-func (s *ServiceDefinition) Host() string {
-	return utils.GetK8sAddress(ServiceName)
-}
-
-func (s *ServiceDefinition) Endpoints() hermes.EndpointMap {
-	return hermes.EndpointMap{
-		hermes.Endpoint{"PutKey", "POST", "/rpc/v1/simplerpc", NewPutKeyIn, NewPutKeyOut},
-		hermes.Endpoint{"GetKey", "GET", "/rpc/v1/simplerpc", NewGetKeyIn, NewGetKeyOut},
-	}
-}
