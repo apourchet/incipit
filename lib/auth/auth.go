@@ -2,11 +2,11 @@ package auth
 
 type AuthClient interface {
 	UserExists(key string) (exists bool, err error)
-	GetUserId(key string) (id string, err error)
 	Register(key string, pass string) (err error)
 
 	Login(key string, pass string) (token string, err error)
 
+	GetUserId(token string) (id string, err error)
 	Renew(token string) (newToken string, err error)
 	Validate(token string) (valid bool, err error)
 	Logout(token string) (err error)
@@ -17,16 +17,12 @@ type AuthClient interface {
 
 type mockAuth struct{}
 
-func NewMockAuth() AuthClient {
+func NewMockAuthClient() AuthClient {
 	return &mockAuth{}
 }
 
 func (m *mockAuth) UserExists(key string) (exists bool, err error) {
 	return false, nil
-}
-
-func (m *mockAuth) GetUserId(key string) (id string, err error) {
-	return "123", nil
 }
 
 func (m *mockAuth) Register(key string, pass string) (err error) {
@@ -35,6 +31,10 @@ func (m *mockAuth) Register(key string, pass string) (err error) {
 
 func (m *mockAuth) Login(key string, pass string) (token string, err error) {
 	return "", nil
+}
+
+func (m *mockAuth) GetUserId(token string) (id string, err error) {
+	return "123", nil
 }
 
 func (m *mockAuth) Renew(token string) (newToken string, err error) {

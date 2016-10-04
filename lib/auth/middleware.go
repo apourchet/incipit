@@ -20,26 +20,26 @@ type AuthMiddleware interface {
 	SetUserId() func(*gin.Context)
 }
 
-type mockAuthMW struct {
-	authClient AuthClient
+type defaultAuthMW struct {
+	AuthClient
 }
 
-func NewMockAuthMW() AuthMiddleware {
-	return &mockAuthMW{NewMockAuth()}
+func AuthMWFromClient(client AuthClient) AuthMiddleware {
+	return &defaultAuthMW{client}
 }
 
-func (m *mockAuthMW) RenewToken() func(*gin.Context) {
+func (m *defaultAuthMW) RenewToken() func(*gin.Context) {
 	return func(c *gin.Context) {}
 }
 
-func (m *mockAuthMW) CheckToken() func(*gin.Context) {
+func (m *defaultAuthMW) CheckToken() func(*gin.Context) {
 	return func(c *gin.Context) {}
 }
 
-func (m *mockAuthMW) CheckClaim(field string, check func(val string) bool) func(*gin.Context) {
+func (m *defaultAuthMW) CheckClaim(field string, check func(val string) bool) func(*gin.Context) {
 	return func(c *gin.Context) {}
 }
 
-func (m *mockAuthMW) SetUserId() func(*gin.Context) {
+func (m *defaultAuthMW) SetUserId() func(*gin.Context) {
 	return func(c *gin.Context) {}
 }
