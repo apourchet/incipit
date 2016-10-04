@@ -10,8 +10,6 @@ import (
 
 	"golang.org/x/net/context"
 
-	etcd_client "github.com/coreos/etcd/client"
-
 	"github.com/apourchet/hermes"
 	"github.com/apourchet/incipit/lib/etcd"
 	"github.com/apourchet/incipit/lib/healthz"
@@ -21,16 +19,17 @@ import (
 	. "github.com/apourchet/incipit/lib/simplerpc"
 )
 
-var (
-	kapi etcd_client.KeysAPI
-)
-
 type SimpleRpc struct {
-	ServiceDefinition
+	hermes.Serviceable
+	kapi etcd.Client
+}
+
+func NewService(kapi etcd.Client) *SimpleRpc {
+	return &SimpleRpc{ServiceDefinition, kapi}
 }
 
 func (s *SimpleRpc) PutKey(c *gin.Context, in *PutKeyIn, out *PutKeyOut) (int, error) {
-	_, err := kapi.Set(context.Background(), in.Key, in.Value, nil)
+	err := s.kapi.Set(context.Background(), in.Key, in.Value, nil)
 	if err != nil {
 		logging.Error("Failed to insert into etcd: %v", err)
 		return http.StatusInternalServerError, err
@@ -41,21 +40,22 @@ func (s *SimpleRpc) PutKey(c *gin.Context, in *PutKeyIn, out *PutKeyOut) (int, e
 }
 
 func (s *SimpleRpc) GetKey(c *gin.Context, in *GetKeyIn, out *GetKeyOut) (int, error) {
-	resp, err := kapi.Get(context.Background(), in.Key, nil)
+	val, err := s.kapi.Get(context.Background(), in.Key, nil)
 	if err != nil {
 		logging.Error("Failed to get from etcd: %v", err)
 		return http.StatusInternalServerError, err
 	}
 	logging.Info("Successfully retrieved from etcd")
-	out.Value = resp.Node.Value
+	out.Value = val
 	return http.StatusOK, nil
 }
 
 func main() {
-	kapi = etcd.GetK8sDefaultClientFatal()
+	kapi := etcd.GetK8sDefaultClientFatal()
 	healthz.SpawnHealthCheck(healthz.DefaultPort)
+	svc := NewService(kapi)
 
 	engine := gin.New()
-	hermes.InitService(&SimpleRpc{}).Serve(engine)
+	hermes.InitService(svc).Serve(engine)
 	engine.Run(fmt.Sprintf(":%d", RpcPort))
 }

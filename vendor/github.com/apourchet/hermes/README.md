@@ -13,9 +13,7 @@ func (s *MyService) Host() string {
 
 func (s *MyService) Endpoints() EndpointMap {
 	return EndpointMap{
-        // RpcCall will default to GET since it is first
 		Endpoint{"RpcCall", "GET", "/test", NewInbound, NewOutbound}, 
-		Endpoint{"RpcCall", "POST", "/test", NewInbound, NewOutbound},
 		Endpoint{"OtherRpcCall", "POST", "/test", NewOtherInbound, NewOtherOutbound},
 	}
 }

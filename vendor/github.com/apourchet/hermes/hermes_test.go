@@ -43,6 +43,26 @@ func (s *MyService) RpcCall(c *gin.Context, in *Inbound, out *Outbound) (int, er
 	return http.StatusBadRequest, nil
 }
 
+// Mocked Service
+type MockedService struct{}
+
+func (s *MockedService) Endpoints() EndpointMap {
+	return EndpointMap{
+		Endpoint{"RpcCall", "GET", "/test", NewInbound, NewOutbound},
+		Endpoint{"RpcCall", "POST", "/test", NewInbound, NewOutbound},
+	}
+}
+
+func (s *MockedService) RpcCall(in *Inbound, out *Outbound) (int, error) {
+	if in.Message == "secret" {
+		out.Ok = true
+		return http.StatusOK, nil
+	}
+	out.Ok = false
+	return http.StatusBadRequest, nil
+}
+
+// Tests
 func TestMain(m *testing.M) {
 	si := InitService(&MyService{})
 	engine := gin.New()
@@ -50,6 +70,21 @@ func TestMain(m *testing.M) {
 	go engine.Run(":9000")
 	time.Sleep(500 * time.Millisecond)
 	m.Run()
+}
+
+func TestMock(t *testing.T) {
+	si := InitMockService(&MockedService{})
+	out := &Outbound{false}
+	code, err := si.Call("RpcCall", &Inbound{"secret"}, out)
+	if code != 200 {
+		t.Fail()
+	}
+	if err != nil {
+		t.Fail()
+	}
+	if !out.Ok {
+		t.Fail()
+	}
 }
 
 func TestCallSuccess(t *testing.T) {
