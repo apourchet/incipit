@@ -7,10 +7,18 @@ PROJECT = $(shell jq -r '.project' $(CONFIG))
 DOCKER_IMAGE_PREFIX = gcr.io/$(PROJECT)
 CONTAINERS = auth 
 
+.PHONY: build
+
+build-%:
+	cd $* && sh build.sh && cd -
+
 build:
 	$(foreach container, $(CONTAINERS), \
-	sh $(container)/build.sh)
+	cd $(container) && sh build.sh && cd -)
 
-build-docker:
+dockerize-%:
+	cd $* && docker build -t $(DOCKER_IMAGE_PREFIX)/$*:v1 . && cd -
+
+dockerize:
 	$(foreach container, $(CONTAINERS), \
-	docker build -t $(DOCKER_IMAGE_PREFIX)/$(container):v1 $(container))
+	cd $(container) && docker build -t $(DOCKER_IMAGE_PREFIX)/$(container):v1 . && cd -)

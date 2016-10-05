@@ -62,7 +62,7 @@ func (s *AuthService) Login(c *gin.Context) {
 		return
 	}
 	auth.SetToken(c, token)
-	c.Status(http.StatusOK)
+	c.JSON(http.StatusOK, gin.H{"token": token})
 }
 
 func (s *AuthService) Logout(c *gin.Context) {

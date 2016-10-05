@@ -18,7 +18,7 @@ DOWNCMD = "mount | grep -o 'on /var/lib/kubelet.* type' | cut -c 4- | rev | cut 
 DOCKER_MACHINE_NAME = $(PROJECT_NAME)
 DOCKER_MACHINE_IP = $(shell docker-machine ip $(DOCKER_MACHINE_NAME))
 DOCKER_BUILDER_IMAGENAME = $(PROJECT_NAME)-builder-image
-DOCKER_BUILDER_CONTAINER = $(DOCKER_BUILDER_IMAGENAME)-container
+DOCKER_BUILDER_CONTAINER = $(PROJECT_NAME)-builder-container
 ETC_HOST_HACK_UNDO = sudo sed -i '' "/$(DOCKER_MACHINE_NAME)\.machine/d" /etc/hosts
 ETC_HOST_HACK_DO = 
 
@@ -56,7 +56,7 @@ docker-builder:
 
 docker-build:
 	docker exec $(DOCKER_BUILDER_CONTAINER) make build
-	make -C containers build-docker
+	make -C containers dockerize
 
 kup:
 	kubectl config set-cluster $(CLUSTER_NAME) --server http://$(DOCKER_MACHINE_IP):8080
@@ -92,11 +92,11 @@ local-certs:
 
 # Service specific targets
 build-%:
-	make -C containers/$* build
+	make -C containers build-$*
 
 docker-build-%:
 	docker exec $(DOCKER_BUILDER_CONTAINER) make build-$*
-	make -C containers/$* build-docker
+	make -C containers dockerize-$*
 
 recall-%:
 	kubectl get deployments | cut -f 1 -d ' ' | tail -n +2 | grep $* | xargs kubectl delete deployments
@@ -107,6 +107,10 @@ deploy-%:
 
 redeploy-%: 
 	make recall-$* deploy-$*
+
+loop-%: 
+	make docker-build-$*
+	make redeploy-$*
 
 # GOOGLE SPECIFIC TARGETS
 gcloud-kup:
