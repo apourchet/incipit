@@ -20,16 +20,10 @@
                 "http": {
                     "paths": [
                         {
-                            "path": "/hellogo", 
+                            "path": "/api/v1/auth", 
                             "backend": {
-                                "serviceName": "hellogo", 
+                                "serviceName": "auth", 
                                 "servicePort": 8080
-                            }
-                        }, {
-                            "path": "/hellonode", 
-                            "backend": {
-                                "serviceName": "hellonode", 
-                                "servicePort": 8081
                             }
                         }
                     ]

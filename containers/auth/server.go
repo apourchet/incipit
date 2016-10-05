@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/apourchet/incipit/lib/auth"
 	"github.com/apourchet/incipit/lib/healthz"
-	"github.com/apourchet/incipit/lib/logging"
 	"github.com/gin-gonic/gin"
 )
 
@@ -97,5 +97,5 @@ func main() {
 	healthz.SpawnHealthCheck(healthz.DefaultPort)
 
 	err := NewAuthService(auth.NewMockAuthClient()).Run()
-	logging.Fatal(err)
+	log.Fatal(err)
 }

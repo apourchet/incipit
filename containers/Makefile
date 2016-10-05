@@ -1,13 +1,16 @@
 .PHONY: docker-build
 
+CONFIG = ../gcloud.json
+ACCOUNT = $(shell jq -r '.account' $(CONFIG))
+PROJECT = $(shell jq -r '.project' $(CONFIG))
+
+DOCKER_IMAGE_PREFIX = gcr.io/$(PROJECT)
+CONTAINERS = auth 
+
 build:
-	make -C hellogo build
-	make -C hellonode build
-	make -C simplerpc build
-	make -C auth build
+	$(foreach container, $(CONTAINERS), \
+	sh $(container)/build.sh)
 
 build-docker:
-	make -C hellogo build-docker
-	make -C hellonode build-docker
-	make -C simplerpc build-docker
-	make -C auth build-docker
+	$(foreach container, $(CONTAINERS), \
+	docker build -t $(DOCKER_IMAGE_PREFIX)/$(container):v1 $(container))

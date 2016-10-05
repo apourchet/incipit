@@ -3,7 +3,6 @@ package healthz
 import (
 	"fmt"
 
-	"github.com/apourchet/incipit/lib/logging"
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,5 +21,6 @@ func SpawnHealthCheck(port int) {
 	engine.GET(DefaultEndpoint, healthCheck)
 	go engine.Run(fmt.Sprintf(":%d", port))
 
-	logging.Info("Healthz Ready at :%d%s\n", port, DefaultEndpoint)
+	// TODO LOG
+	// logging.Info("Healthz Ready at :%d%s\n", port, DefaultEndpoint)
 }

@@ -11,7 +11,7 @@
             "spec": {
                 "containers": [
                     {
-                        "image": "{{$.DOCKER_REPO}}/auth:latest", 
+                        "image": "{{$.DOCKER_REPO}}/auth:v1", 
                         "name": "auth", 
                         "ports": [
                             { "containerPort": 8080 }
