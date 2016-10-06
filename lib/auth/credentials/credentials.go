@@ -6,10 +6,23 @@ import (
 )
 
 type CredentialsClient interface {
+	// Whether or not the user already exists
+	// Error for internal only
 	UserExists(key string) (exists bool, err error)
+
+	// Errors if user exists
+	// Errors for internal error
 	Register(key string, pass string) (err error)
+
+	// Error for internal only
+	// Return "" if user not found
 	GetUserId(key string) (id string, err error)
+
+	// Return false if user not found
+	// Error for internal only
 	CheckCredentials(key string, pass string) (check bool, err error)
+
+	// Error for internal only
 	Deregister(key string) (err error)
 }
 
@@ -37,6 +50,10 @@ func (m *mockCredentialClient) UserExists(key string) (exists bool, err error) {
 }
 
 func (m *mockCredentialClient) Register(key string, pass string) (err error) {
+	_, ok := m.users[key]
+	if ok {
+		return fmt.Errorf("User already exists")
+	}
 	m.users[key] = user{strconv.Itoa(m.currId), key, pass}
 	m.currId += 1
 	return nil
@@ -45,7 +62,7 @@ func (m *mockCredentialClient) Register(key string, pass string) (err error) {
 func (m *mockCredentialClient) GetUserId(key string) (id string, err error) {
 	user, ok := m.users[key]
 	if !ok {
-		return "", fmt.Errorf("User not found")
+		return "", nil
 	}
 	return user.id, nil
 }
@@ -53,7 +70,7 @@ func (m *mockCredentialClient) GetUserId(key string) (id string, err error) {
 func (m *mockCredentialClient) CheckCredentials(key, pass string) (check bool, err error) {
 	user, ok := m.users[key]
 	if !ok {
-		return false, fmt.Errorf("User not found")
+		return false, nil
 	}
 	return user.password == pass, nil
 }

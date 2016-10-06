@@ -79,5 +79,9 @@ func (m *mockAuth) Deregister(token string) (err error) {
 	if err != nil {
 		return err
 	}
+	err = m.jwtHandler.InvalidateToken(token)
+	if err != nil {
+		return err
+	}
 	return m.creds.Deregister(subject)
 }
