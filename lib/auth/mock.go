@@ -16,12 +16,6 @@ type mockAuth struct {
 	currId int
 }
 
-type user struct {
-	id       string
-	username string
-	password string
-}
-
 func NewMockAuthClient() AuthClient {
 	users := make(map[string]user)
 	tokens := make(map[string]bool)
