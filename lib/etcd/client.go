@@ -4,11 +4,10 @@ import (
 	"fmt"
 	"time"
 
-	"golang.org/x/net/context"
-
-	"github.com/apourchet/incipit/lib/logging"
 	"github.com/apourchet/incipit/lib/utils"
 	etcdClient "github.com/coreos/etcd/client"
+	"github.com/golang/glog"
+	"golang.org/x/net/context"
 )
 
 const (
@@ -43,7 +42,9 @@ func GetK8sDefaultClient() (Client, error) {
 // if there was an error
 func GetK8sDefaultClientFatal() Client {
 	c, err := GetK8sDefaultClient()
-	logging.FatalError(err)
+	if err != nil {
+		glog.Fatal(err)
+	}
 	return c
 }
 

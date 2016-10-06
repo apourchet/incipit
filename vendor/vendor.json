@@ -283,10 +283,10 @@
 			"revisionTime": "2016-08-23T18:01:44Z"
 		},
 		{
-			"checksumSHA1": "5mJ/wol4LCFBUct8fbQVkRJv7ZI=",
+			"checksumSHA1": "FeVrmkBVO94QixjKtxeRrmggzkg=",
 			"path": "github.com/stretchr/testify/assert",
-			"revision": "d77da356e56a7428ad25149ca77381849a6a5232",
-			"revisionTime": "2016-06-15T09:26:46Z"
+			"revision": "976c720a22c8eb4eb6a0b4348ad85ad12491a506",
+			"revisionTime": "2016-09-25T22:06:09Z"
 		},
 		{
 			"checksumSHA1": "NSsNJMNfl0agqnAoTNntSE64h0E=",
