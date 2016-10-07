@@ -69,8 +69,3 @@ class Auth():
         resp = self.userExists(session, username)
         assert resp.status_code == 200
         assert resp.json()['found'] == False
-
-if __name__ == "__main__":
-    auth = Auth('incipit.machine:30002')
-    auth.test()
-    print ">>> Auth tests PASSED"
