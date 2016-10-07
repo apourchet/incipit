@@ -100,18 +100,20 @@ docker-build-%:
 	make -C containers dockerize-$*
 
 recall-%:
-	kubectl get deployments | cut -f 1 -d ' ' | tail -n +2 | grep $* | xargs kubectl delete deployments
+	kubectl get pods | grep $* | cut -f 1 -d ' ' | tail -n 1 | xargs kubectl delete pod 
 
 deploy-%:
 	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./resources/$*/*.json | kubectl apply -f -
 	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./deployments/$*/*.json | kubectl apply -f -
 
-redeploy-%: 
-	make recall-$* deploy-$*
+bounce-%:
+	make recall-$*
+	kubectl get pods | grep ingress | cut -f 1 -d ' ' | tail -n 1 | xargs kubectl delete pod 
+	sleep 3
 
 loop-%: 
 	make docker-build-$*
-	make redeploy-$*
+	make bounce-$*
 
 # GOOGLE SPECIFIC TARGETS
 gcloud-kup:

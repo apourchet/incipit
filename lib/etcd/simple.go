@@ -31,6 +31,7 @@ func GetK8sDefaultConfig() etcdClient.Config {
 
 // Returns an etcd client based on K8sDefaultConfig
 func GetK8sDefaultClient() (EtcdClient, error) {
+	glog.Infof("Using etcd K8sDefaultClient")
 	config := GetK8sDefaultConfig()
 	client, err := etcdClient.New(config)
 	kapi := etcdClient.NewKeysAPI(client)
