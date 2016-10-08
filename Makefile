@@ -22,6 +22,9 @@ DOCKER_BUILDER_CONTAINER = $(PROJECT_NAME)-builder-container
 ETC_HOST_HACK_UNDO = sudo sed -i '' "/$(DOCKER_MACHINE_NAME)\.machine/d" /etc/hosts
 ETC_HOST_HACK_DO = 
 
+# TESTER
+TESTER_NAME = tester
+
 # TOOLS
 KUBE_CONFIG_TOOL = ./tools/kubeconfig/kubeconfig.go
 KUBE_CONFIG = ./kubeconfigs/local.json
@@ -81,7 +84,13 @@ deployments:
 recall:
 	kubectl get deployments | cut -f 1 -d ' ' | tail -n +2 | xargs kubectl delete deployments
 
+# Spin up pod that tests
 test:
+	-kubectl delete job tester
+	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./deployments/tester/*.json | kubectl apply -f -
+
+# Test locally
+local-test:
 	go test ./lib/...
 	go test ./containers/...
 

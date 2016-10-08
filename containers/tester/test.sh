@@ -1,3 +1,4 @@
 #! /bin/bash
 
-go test /go/src/github.com/apourchet/incipit/lib/...
+echo "TESTING"
+/tests/redis.test

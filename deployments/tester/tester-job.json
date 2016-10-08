@@ -1,0 +1,24 @@
+{
+    "apiVersion": "batch/v1", 
+    "kind": "Job", 
+    "metadata": {
+        "namespace": "{{.NAMESPACE}}", 
+        "name": "tester"
+    },
+    "spec": {
+        "template": {
+            "spec": {
+                "restartPolicy": "Never", 
+                "containers": [
+                    {
+                        "image": "{{$.DOCKER_REPO}}/tester:v1", 
+                        "name": "tester"
+                    }
+                ]
+            }, 
+            "metadata": {
+                "name": "tester"
+            }
+        }
+    }
+}
