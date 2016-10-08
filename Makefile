@@ -109,7 +109,7 @@ deploy-%:
 bounce-%:
 	make recall-$*
 	kubectl get pods | grep ingress | cut -f 1 -d ' ' | tail -n 1 | xargs kubectl delete pod 
-	sleep 3
+	sleep 1
 
 loop-%: 
 	make docker-build-$*
