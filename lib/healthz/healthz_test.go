@@ -6,10 +6,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestSpawn(t *testing.T) {
+	gin.SetMode(gin.ReleaseMode)
 	SpawnHealthCheck(12345)
 	time.Sleep(5 * time.Millisecond)
 	testRequest(t, "http://localhost:12345/healthz")

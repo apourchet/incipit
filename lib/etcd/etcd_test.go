@@ -3,10 +3,18 @@ package etcd
 import (
 	"testing"
 
+	"github.com/apourchet/incipit/lib/utils"
+	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 )
 
 func etcdClients() []EtcdClient {
+	if utils.InKubernetes() {
+		return []EtcdClient{
+			NewMockEtcdClient(),
+			GetK8sDefaultClientFatal(),
+		}
+	}
 	return []EtcdClient{
 		NewMockEtcdClient(),
 	}
@@ -14,12 +22,13 @@ func etcdClients() []EtcdClient {
 
 func TestSimpleSetGet(t *testing.T) {
 	for _, c := range etcdClients() {
-		_, found, err := c.Get("/key")
+		k := "/" + uuid.NewV4().String()
+		_, found, err := c.Get(k)
 		assert.Nil(t, err)
 		assert.Equal(t, found, false)
-		err = c.Set("/key", "value")
+		err = c.Set(k, "value")
 		assert.Nil(t, err)
-		val, found, err := c.Get("/key")
+		val, found, err := c.Get(k)
 		assert.Nil(t, err)
 		assert.Equal(t, found, true)
 		assert.Equal(t, val, "value")
@@ -28,21 +37,22 @@ func TestSimpleSetGet(t *testing.T) {
 
 func TestDelete(t *testing.T) {
 	for _, c := range etcdClients() {
-		err := c.Delete("/key")
+		k := "/" + uuid.NewV4().String()
+		err := c.Delete(k)
 		assert.Nil(t, err)
 
-		err = c.Set("/key", "value")
+		err = c.Set(k, "value")
 		assert.Nil(t, err)
 
-		val, found, err := c.Get("/key")
+		val, found, err := c.Get(k)
 		assert.Nil(t, err)
 		assert.Equal(t, found, true)
 		assert.Equal(t, val, "value")
 
-		err = c.Delete("/key")
+		err = c.Delete(k)
 		assert.Nil(t, err)
 
-		val, found, err = c.Get("/key")
+		val, found, err = c.Get(k)
 		assert.Nil(t, err)
 		assert.Equal(t, found, false)
 	}

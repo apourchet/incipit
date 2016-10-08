@@ -18,3 +18,7 @@ func GetK8sAddress(serviceName string) string {
 	port := os.Getenv(base + "_SERVICE_PORT")
 	return fmt.Sprintf("%s:%s", host, port)
 }
+
+func InKubernetes() bool {
+	return os.Getenv("IN_KUBERNETES") == "true"
+}

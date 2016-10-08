@@ -12,7 +12,10 @@
                 "containers": [
                     {
                         "image": "{{$.DOCKER_REPO}}/tester:v1", 
-                        "name": "tester"
+                        "name": "tester",
+                        "env": [
+                            {"name": "IN_KUBERNETES", "value": "true"}
+                        ]
                     }
                 ]
             }, 
