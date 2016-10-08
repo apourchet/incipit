@@ -59,6 +59,9 @@ docker-builder:
 
 docker-build:
 	docker exec $(DOCKER_BUILDER_CONTAINER) make build
+	make dockerize
+
+dockerize:
 	make -C containers dockerize
 
 kup:
@@ -86,8 +89,8 @@ recall:
 
 # Spin up pod that tests
 test:
-	-kubectl delete job tester
-	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./deployments/tester/*.json | kubectl apply -f -
+	-kubectl delete job tester-job
+	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./jobs/tester/*.json | kubectl apply -f -
 
 # Test locally
 local-test:
@@ -112,7 +115,7 @@ recall-%:
 	kubectl get pods | grep $* | cut -f 1 -d ' ' | tail -n 1 | xargs kubectl delete pod 
 
 deploy-%:
-	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./resources/$*/*.json | kubectl apply -f -
+	-go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./resources/$*/*.json | kubectl apply -f -
 	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./deployments/$*/*.json | kubectl apply -f -
 
 bounce-%:

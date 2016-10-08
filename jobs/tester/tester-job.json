@@ -3,7 +3,7 @@
     "kind": "Job", 
     "metadata": {
         "namespace": "{{.NAMESPACE}}", 
-        "name": "tester"
+        "name": "tester-job"
     },
     "spec": {
         "template": {
@@ -12,12 +12,13 @@
                 "containers": [
                     {
                         "image": "{{$.DOCKER_REPO}}/tester:v1", 
-                        "name": "tester"
+                        "name": "tester",
+                        "command": ["/bin/bash", "/test.sh"]
                     }
                 ]
             }, 
             "metadata": {
-                "name": "tester"
+                "name": "tester-job"
             }
         }
     }

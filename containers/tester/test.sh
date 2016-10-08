@@ -1,4 +1,9 @@
 #! /bin/bash
 
 echo "TESTING"
-/tests/redis.test
+
+for file in /tests/*; do
+    $file
+done
+
+exit 0

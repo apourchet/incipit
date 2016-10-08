@@ -1,0 +1,31 @@
+{
+    "apiVersion": "extensions/v1beta1", 
+    "kind": "Deployment", 
+    "metadata": {
+        "namespace": "{{.NAMESPACE}}", 
+        "name": "tester"
+    },
+    "spec": {
+        "replicas": 1,
+        "template": {
+            "spec": {
+                "containers": [
+                    {
+                        "image": "{{$.DOCKER_REPO}}/tester:v1", 
+                        "name": "tester"
+                    }
+                ]
+            }, 
+            "metadata": {
+                "labels": {
+                    "tester": "true"
+                }
+            }
+        }, 
+        "selector": {
+            "matchLabels": {
+                "tester": "true"
+            }
+        }
+    }
+}
