@@ -13,48 +13,6 @@
 			"revisionTime": "2016-07-20T08:12:29Z"
 		},
 		{
-			"checksumSHA1": "jGWGjiPkV2PWaSAZ4jU6ttDslgk=",
-			"path": "github.com/apourchet/dummy/containers/hellogo",
-			"revision": "48c94dd7b503af3fab75e732c72b4419bf78ab6e",
-			"revisionTime": "2016-09-23T20:01:57Z"
-		},
-		{
-			"checksumSHA1": "1hbm6q2K/BXD30EBtotVy872Bds=",
-			"path": "github.com/apourchet/dummy/containers/hermes",
-			"revision": "48c94dd7b503af3fab75e732c72b4419bf78ab6e",
-			"revisionTime": "2016-09-23T20:01:57Z"
-		},
-		{
-			"checksumSHA1": "Qf0M5NxEC3L5le1Hh2iOLnfD6Lw=",
-			"path": "github.com/apourchet/dummy/lib/etcd",
-			"revision": "48c94dd7b503af3fab75e732c72b4419bf78ab6e",
-			"revisionTime": "2016-09-23T20:01:57Z"
-		},
-		{
-			"checksumSHA1": "WKcZ+42U11RTm34CDne4fitWpyI=",
-			"path": "github.com/apourchet/dummy/lib/healthz",
-			"revision": "48c94dd7b503af3fab75e732c72b4419bf78ab6e",
-			"revisionTime": "2016-09-23T20:01:57Z"
-		},
-		{
-			"checksumSHA1": "oMHzcZ8xk2GEaSMJ6kEYpCewVS4=",
-			"path": "github.com/apourchet/dummy/lib/utils",
-			"revision": "48c94dd7b503af3fab75e732c72b4419bf78ab6e",
-			"revisionTime": "2016-09-23T20:01:57Z"
-		},
-		{
-			"checksumSHA1": "stfo4Ve1yHfgH9v1MSwrI9+s1S8=",
-			"path": "github.com/apourchet/dummy/tools",
-			"revision": "48c94dd7b503af3fab75e732c72b4419bf78ab6e",
-			"revisionTime": "2016-09-23T20:01:57Z"
-		},
-		{
-			"checksumSHA1": "D4h5JaD3tcG1i2YgcJ3E9yMakis=",
-			"path": "github.com/apourchet/hermes",
-			"revision": "aa9e8086786be9b5d4c5083071056562d59dfd10",
-			"revisionTime": "2016-10-03T17:46:23Z"
-		},
-		{
 			"checksumSHA1": "VxTC3y7hg2oeExb23Dn3VbrtKIg=",
 			"path": "github.com/bsm/redeo",
 			"revision": "1ce09fc76693fb3c1ca9b529c66f38920beb6fb8",
@@ -209,12 +167,6 @@
 			"path": "github.com/gopherjs/gopherjs/js",
 			"revision": "7600e3d439bd24b1a637bb6b67e9936c7d8736b3",
 			"revisionTime": "2016-09-20T06:05:35Z"
-		},
-		{
-			"checksumSHA1": "cxz0JXkeS4nazxatJkaCdrMeNgM=",
-			"path": "github.com/jonboulle/clockwork",
-			"revision": "bcac9884e7502bb2b474c0339d889cb981a2f27f",
-			"revisionTime": "2016-09-07T12:20:59Z"
 		},
 		{
 			"checksumSHA1": "T4PaLboFtj3ClK/pPvbiHxYwJd0=",
@@ -521,12 +473,6 @@
 			"path": "golang.org/x/net/context",
 			"revision": "6d3beaea10370160dea67f5c9327ed791afd5389",
 			"revisionTime": "2016-09-11T09:39:33Z"
-		},
-		{
-			"checksumSHA1": "n5oKv09EMGZZ9GUWdLiXZRzEsg0=",
-			"path": "golang.org/x/net/idna",
-			"revision": "f09c4662a0bd6bd8943ac7b4931e185df9471da4",
-			"revisionTime": "2016-09-24T00:10:04Z"
 		},
 		{
 			"checksumSHA1": "jgetS6+ngqOYZyByPivjhtrCko0=",
