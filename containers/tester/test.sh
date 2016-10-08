@@ -3,7 +3,7 @@
 echo "TESTING"
 
 for file in /tests/*; do
-    $file
+    echo ">>> $file" && $file
 done
 
 exit 0
