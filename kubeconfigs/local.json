@@ -13,5 +13,7 @@
     "SERVER_CERT": "misc/local-server.crt",
     "SERVER_KEY": "misc/local-server.key",
 
-    "DOCKER_REPO": "gcr.io/dummy-143017"
+    "DOCKER_REPO": "gcr.io/dummy-143017",
+
+    "DEFAULT_ENV": {"name": "IN_KUBERNETES", "value": "true"}
 }

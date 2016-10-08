@@ -15,7 +15,7 @@
                         "name": "tester",
                         "command": ["/bin/bash", "/test.sh"],
                         "env": [
-                            {"name": "IN_KUBERNETES", "value": "true"}
+                            {{$.DEFAULT_ENV}}
                         ]
                     }
                 ]

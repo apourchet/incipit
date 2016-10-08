@@ -14,7 +14,7 @@
                         "image": "{{$.DOCKER_REPO}}/tester:v1", 
                         "name": "tester",
                         "env": [
-                            {"name": "IN_KUBERNETES", "value": "true"}
+                            {{$.DEFAULT_ENV}}
                         ]
                     }
                 ]

@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bytes"
 	b64 "encoding/base64"
 	"encoding/json"
 	"fmt"
+	"html"
 	"html/template"
 	"io/ioutil"
 	"os"
@@ -41,6 +43,20 @@ func getFuncMap() template.FuncMap {
 	}
 }
 
+func objectsToString(m map[string]interface{}) error {
+	for k, v := range m {
+		cast, ok := v.(map[string]interface{})
+		if ok {
+			strBytes, err := json.Marshal(cast)
+			if err != nil {
+				return err
+			}
+			m[k] = string(strBytes)
+		}
+	}
+	return nil
+}
+
 func main() {
 	if len(os.Args) < 3 {
 		usage()
@@ -61,6 +77,8 @@ func main() {
 		os.Exit(1)
 		return
 	}
+	err = objectsToString(config)
+
 	for i := 2; i < len(os.Args); i++ {
 		fname := os.Args[i]
 		templateBytes, err := ioutil.ReadFile(fname)
@@ -75,12 +93,15 @@ func main() {
 			fmt.Fprintf(os.Stderr, err.Error())
 			continue
 		}
-		err = tmpl.Execute(os.Stdout, config)
+		var buf bytes.Buffer
+		err = tmpl.Execute(&buf, config)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Failed to Execute template %s\n", fname)
 			fmt.Fprintf(os.Stderr, err.Error())
 			continue
 		}
+		str := html.UnescapeString(buf.String())
+		fmt.Fprintf(os.Stdout, str)
 		// fmt.Println("---")
 	}
 }
