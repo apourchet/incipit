@@ -4,11 +4,18 @@ import (
 	"testing"
 	"time"
 
+	"github.com/apourchet/incipit/lib/utils"
 	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 )
 
 func redisClients(t *testing.T) []RedisClient {
+	if utils.InKubernetes() {
+		return []RedisClient{
+			NewMockRedisClient(),
+			GetK8sDefaultClient(),
+		}
+	}
 	return []RedisClient{
 		NewMockRedisClient(),
 	}
