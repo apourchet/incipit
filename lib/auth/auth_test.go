@@ -3,10 +3,17 @@ package auth
 import (
 	"testing"
 
+	"github.com/apourchet/incipit/lib/utils"
 	"github.com/stretchr/testify/assert"
 )
 
 func authClients() []AuthClient {
+	if utils.InKubernetes() {
+		return []AuthClient{
+			NewMockAuthClient(),
+			NewAuthClientV1Fatal(),
+		}
+	}
 	return []AuthClient{
 		NewMockAuthClient(),
 	}

@@ -122,10 +122,7 @@ func main() {
 	flag.Parse()
 	healthz.SpawnHealthCheck(healthz.DefaultPort)
 
-	authClient, err := auth.NewK8sAuthClient()
-	if err != nil {
-		glog.Fatalf("Failed to get k8s auth client %v", err)
-	}
-	err = NewAuthService(authClient).Run()
+	authClient := auth.GetDefaultClient()
+	err := NewAuthService(authClient).Run()
 	log.Fatal(err)
 }

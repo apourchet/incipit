@@ -13,18 +13,14 @@ type etcdCredentialClient struct {
 	currId int
 }
 
-func NewK8sEtcdCredentialsClient() (CredentialsClient, error) {
-	glog.Infof("Using K8sEtcdCredentialClient")
+func NewEtcdCredentialsClient() (CredentialsClient, error) {
+	glog.Infof("Using EtcdCredentialClient")
 	c := &etcdCredentialClient{}
-	store, err := etcd.GetK8sDefaultClient()
-	if err != nil {
-		return nil, err
-	}
-	c.store = store
+	c.store = etcd.GetDefaultClient()
 	return c, nil
 }
 
-func NewEtcdCredentialsClient(store etcd.EtcdClient) CredentialsClient {
+func NewCredentialsClient(store etcd.EtcdClient) CredentialsClient {
 	glog.Infof("Using etcdCredentialClient")
 	c := &etcdCredentialClient{}
 	c.store = store

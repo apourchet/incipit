@@ -13,7 +13,7 @@ func redisClients(t *testing.T) []RedisClient {
 	if utils.InKubernetes() {
 		return []RedisClient{
 			NewMockRedisClient(),
-			GetK8sDefaultClient(),
+			GetK8sClientV1(),
 		}
 	}
 	return []RedisClient{

@@ -12,7 +12,7 @@ func etcdClients() []EtcdClient {
 	if utils.InKubernetes() {
 		return []EtcdClient{
 			NewMockEtcdClient(),
-			GetK8sDefaultClientFatal(),
+			GetK8sClientV1Fatal(),
 		}
 	}
 	return []EtcdClient{

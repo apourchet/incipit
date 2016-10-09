@@ -12,7 +12,7 @@ const (
 	CLIENT_SERVICENAME = "redis"
 )
 
-func GetK8sDefaultConfig() *redis.Options {
+func GetK8sConfigV1() *redis.Options {
 	return &redis.Options{
 		Addr:     utils.GetK8sAddress(CLIENT_SERVICENAME),
 		Password: "", // no password set
@@ -20,23 +20,23 @@ func GetK8sDefaultConfig() *redis.Options {
 	}
 }
 
-func GetK8sDefaultClient() RedisClient {
-	glog.Infof("Using redis K8sDefaultClient")
-	config := GetK8sDefaultConfig()
-	return NewK8sClient(redis.NewClient(config))
+func GetK8sClientV1() RedisClient {
+	glog.Infof("Using redis K8sClientV1")
+	config := GetK8sConfigV1()
+	return NewK8sClientV1(redis.NewClient(config))
 }
 
-type k8sClientImpl struct {
+type k8sClientV1 struct {
 	client *redis.Client
 }
 
-func NewK8sClient(client *redis.Client) RedisClient {
-	c := &k8sClientImpl{}
+func NewK8sClientV1(client *redis.Client) RedisClient {
+	c := &k8sClientV1{}
 	c.client = client
 	return c
 }
 
-func (c *k8sClientImpl) Get(key string) (value string, found bool, err error) {
+func (c *k8sClientV1) Get(key string) (value string, found bool, err error) {
 	found, err = c.client.Exists(key).Result()
 	if err != nil || !found {
 		return "", found, err
@@ -45,14 +45,14 @@ func (c *k8sClientImpl) Get(key string) (value string, found bool, err error) {
 	return val, true, err
 }
 
-func (c *k8sClientImpl) Set(key string, value string) error {
+func (c *k8sClientV1) Set(key string, value string) error {
 	return c.client.Set(key, value, 0).Err()
 }
 
-func (c *k8sClientImpl) SetExpire(key string, value string, exp time.Duration) error {
+func (c *k8sClientV1) SetExpire(key string, value string, exp time.Duration) error {
 	return c.client.Set(key, value, exp).Err()
 }
 
-func (c *k8sClientImpl) Delete(key string) error {
+func (c *k8sClientV1) Delete(key string) error {
 	return c.client.Del(key).Err()
 }

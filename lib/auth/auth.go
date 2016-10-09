@@ -1,9 +1,6 @@
 package auth
 
-import (
-	"github.com/apourchet/incipit/lib/auth/credentials"
-	"github.com/apourchet/incipit/lib/auth/jwt"
-)
+import "github.com/apourchet/incipit/lib/utils"
 
 type AuthClient interface {
 	UserExists(key string) (exists bool, err error)
@@ -17,6 +14,9 @@ type AuthClient interface {
 	Deregister(token string) (err error)
 }
 
-func NewMockAuthClient() AuthClient {
-	return NewSimpleAuthClient(credentials.NewMockCredentialClient(), jwt.NewDefaultJWTHandler())
+func GetDefaultClient() AuthClient {
+	if utils.InKubernetes() {
+		NewAuthClientV1Fatal()
+	}
+	return NewMockAuthClient()
 }
