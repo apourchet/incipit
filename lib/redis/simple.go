@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	CLIENT_SERVICENAME = "redis-client"
+	CLIENT_SERVICENAME = "redis"
 )
 
 func GetK8sDefaultConfig() *redis.Options {
@@ -37,17 +37,22 @@ func NewK8sClient(client *redis.Client) RedisClient {
 }
 
 func (c *k8sClientImpl) Get(key string) (value string, found bool, err error) {
-	return "", false, err
+	found, err = c.client.Exists(key).Result()
+	if err != nil || !found {
+		return "", found, err
+	}
+	val, err := c.client.Get(key).Result()
+	return val, true, err
 }
 
 func (c *k8sClientImpl) Set(key string, value string) error {
-	return nil
+	return c.client.Set(key, value, 0).Err()
 }
 
 func (c *k8sClientImpl) SetExpire(key string, value string, exp time.Duration) error {
-	return nil
+	return c.client.Set(key, value, exp).Err()
 }
 
 func (c *k8sClientImpl) Delete(key string) error {
-	return nil
+	return c.client.Del(key).Err()
 }
