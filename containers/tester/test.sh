@@ -2,9 +2,6 @@
 
 echo "TESTING"
 
-go test -v github.com/apourchet/incipit/lib/...
-# for file in /tests/*; do
-#     echo ">>> $file" && $file
-# done
+go test github.com/apourchet/incipit/lib/... || go test -v github.com/apourchet/incipit/lib/...
 
 exit 0
