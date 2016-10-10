@@ -77,7 +77,11 @@ func (s *AuthService) Login(c *gin.Context) {
 	key := c.Query("key")
 	pass := c.Query("pass")
 
-	token, err := s.client.Login(key, pass)
+	token, valid, err := s.client.Login(key, pass)
+	if !valid {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
 	if utils.InternalError(c, err) {
 		return
 	}
@@ -105,8 +109,11 @@ func (s *AuthService) Deregister(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
-	_, err = s.client.Validate(token)
-	if err != nil {
+	_, valid, err := s.client.Validate(token)
+	if utils.InternalError(c, err) {
+		return
+	}
+	if !valid {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}

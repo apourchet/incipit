@@ -88,7 +88,7 @@ recall:
 	kubectl get deployments | cut -f 1 -d ' ' | tail -n +2 | xargs kubectl delete deployments
 
 # Spin up pod that tests
-test:
+test: docker-build-tester
 	-kubectl delete job tester-job
 	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./jobs/tester/*.json | kubectl apply -f -
 

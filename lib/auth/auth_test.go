@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/apourchet/incipit/lib/utils"
+	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -21,46 +22,48 @@ func authClients() []AuthClient {
 
 func TestLogin(t *testing.T) {
 	for _, m := range authClients() {
-		_, err := m.Login("user", "pass")
-		assert.NotNil(t, err)
-		err = m.Register("user", "pass")
+		k := uuid.NewV4().String()
+		_, valid, err := m.Login(k, "pass")
 		assert.Nil(t, err)
-		token, err := m.Login("user", "pass")
+		assert.False(t, valid)
+		err = m.Register(k, "pass")
 		assert.Nil(t, err)
+		token, valid, err := m.Login(k, "pass")
+		assert.Nil(t, err)
+		assert.True(t, valid)
 		assert.NotEqual(t, token, "")
-	}
-}
-
-func TestRenew(t *testing.T) {
-	for _, m := range authClients() {
-		m.Register("user", "pass")
-		token, _ := m.Login("user", "pass")
-		newToken, err := m.Renew(token)
-		assert.Nil(t, err)
-		assert.NotEqual(t, newToken, "")
 	}
 }
 
 func TestDeregister(t *testing.T) {
 	for _, m := range authClients() {
-		m.Register("user", "pass")
-		token, _ := m.Login("user", "pass")
+		k := uuid.NewV4().String()
+		m.Register(k, "pass")
+		token, valid, _ := m.Login(k, "pass")
+		assert.True(t, valid)
 		err := m.Deregister(token + "bad")
-		assert.NotNil(t, err)
+		assert.Nil(t, err)
 		err = m.Deregister(token)
 		assert.Nil(t, err)
+		_, valid, err = m.Validate(token)
+		assert.Nil(t, err)
+		assert.False(t, valid)
 	}
 }
 
 func TestLogout(t *testing.T) {
 	for _, m := range authClients() {
-		m.Register("user", "pass")
-		token, _ := m.Login("user", "pass")
+		k := uuid.NewV4().String()
+
+		m.Register(k, "pass")
+		token, valid, _ := m.Login(k, "pass")
+		assert.True(t, valid)
 		err := m.Logout(token + "bad")
 		assert.NotNil(t, err)
 		err = m.Logout(token)
 		assert.Nil(t, err)
-		_, err = m.Validate(token)
-		assert.NotNil(t, err)
+		_, valid, err = m.Validate(token)
+		assert.Nil(t, err)
+		assert.False(t, valid)
 	}
 }

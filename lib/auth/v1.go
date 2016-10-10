@@ -1,8 +1,6 @@
 package auth
 
 import (
-	"fmt"
-
 	"github.com/apourchet/incipit/lib/auth/credentials"
 	"github.com/apourchet/incipit/lib/auth/jwt"
 	"github.com/golang/glog"
@@ -19,7 +17,7 @@ func NewAuthClientV1() (AuthClient, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &authV1{creds, jwt.NewDefaultJWTHandler()}, nil
+	return &authV1{creds, jwt.NewMockJWTHandler()}, nil
 }
 
 func NewAuthClientV1Fatal() AuthClient {
@@ -38,36 +36,23 @@ func (m *authV1) Register(key string, pass string) (err error) {
 	return m.creds.Register(key, pass)
 }
 
-func (m *authV1) Login(key string, pass string) (token string, err error) {
+func (m *authV1) Login(key string, pass string) (token string, valid bool, err error) {
 	check, err := m.creds.CheckCredentials(key, pass)
 	if err != nil {
 		glog.Errorf("Failed to check credentials %v", err)
-		return "", fmt.Errorf("Error checking credentials")
+		return "", false, err
 	}
 	if !check {
-		return "", fmt.Errorf("Wrong credentials")
+		return "", false, nil
 	}
 	token, err = m.jwtHandler.CreateToken(key)
 	if err != nil {
-		return "", err
+		return "", false, err
 	}
-	return token, nil
+	return token, true, nil
 }
 
-func (m *authV1) Renew(token string) (newToken string, err error) {
-	subject, err := m.jwtHandler.ValidateToken(token)
-	if err != nil {
-		return "", err
-	}
-	newToken, err = m.jwtHandler.CreateToken(subject)
-	if err != nil {
-		glog.Errorf("Failed to create new token %v", err)
-		return "", err
-	}
-	return newToken, nil
-}
-
-func (m *authV1) Validate(token string) (id string, err error) {
+func (m *authV1) Validate(token string) (id string, valid bool, err error) {
 	return m.jwtHandler.ValidateToken(token)
 }
 
@@ -76,8 +61,8 @@ func (m *authV1) Logout(token string) (err error) {
 }
 
 func (m *authV1) Deregister(token string) (err error) {
-	subject, err := m.jwtHandler.ValidateToken(token)
-	if err != nil {
+	subject, valid, err := m.jwtHandler.ValidateToken(token)
+	if err != nil || !valid {
 		return err
 	}
 	err = m.jwtHandler.InvalidateToken(token)

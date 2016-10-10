@@ -10,7 +10,7 @@ type mockAuth struct {
 }
 
 func NewMockAuthClient() AuthClient {
-	c := authV1{credentials.NewMockCredentialClient(), jwt.NewDefaultJWTHandler()}
+	c := authV1{credentials.NewMockCredentialClient(), jwt.NewMockJWTHandler()}
 	m := &mockAuth{c}
 	return m
 }
