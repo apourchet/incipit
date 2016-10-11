@@ -1,12 +1,16 @@
 package utils
 
-import "github.com/parnurzeal/gorequest"
+import (
+	"fmt"
+	"net"
 
-func GetRpc(url string, data interface{}, endStruct interface{}) error {
-	_, _, errs := gorequest.New().Get(url).
-		Send(data).EndStruct(endStruct)
-	if len(errs) != 0 {
-		return errs[0]
+	"google.golang.org/grpc"
+)
+
+func ServeGRPC(port int, server *grpc.Server) error {
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+	if err != nil {
+		return err
 	}
-	return nil
+	return server.Serve(lis)
 }

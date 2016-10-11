@@ -29,8 +29,10 @@ TESTER_NAME = tester
 KUBE_CONFIG_TOOL = ./tools/kubeconfig/kubeconfig.go
 KUBE_CONFIG = ./kubeconfigs/local.json
 
-.PHONY: resources deployments docker-builder
+.PHONY: resources deployments docker-builder protos
 
+# -------BUILDING
+# Create docker host virtual machine
 docker-create-vm:
 	docker-machine create -d virtualbox $(DOCKER_MACHINE_NAME)
 	$(ETC_HOST_HACK_UNDO)
@@ -41,6 +43,7 @@ docker-create-vm:
 	@echo "---------------------------------------------------------"
 	@echo "Now execute in shell:\neval (docker-machine env $(DOCKER_MACHINE_NAME))"
 
+# Destroy that VM
 docker-destroy-vm:
 	docker-machine rm $(DOCKER_MACHINE_NAME)
 
@@ -49,6 +52,8 @@ docker-destroy-vm:
 build:
 	make -C containers build
 
+# Create a docker container that will be used 
+# to do all of the building
 docker-builder:
 	docker build -f Dockerfile -t $(DOCKER_BUILDER_IMAGENAME) .
 	-docker rm $(DOCKER_BUILDER_CONTAINER) -f
@@ -57,6 +62,8 @@ docker-builder:
 		-d \
 		$(DOCKER_BUILDER_IMAGENAME) /bin/sh -c "while true; do sleep 10; done"
 
+# Build all within docker
+# Then dockerize all of the containers
 docker-build:
 	docker exec $(DOCKER_BUILDER_CONTAINER) make build
 	make dockerize
@@ -64,6 +71,11 @@ docker-build:
 dockerize:
 	make -C containers dockerize
 
+protos:
+	cd protos && protoc --go_out=plugins=grpc:./go *.proto && cd -
+
+# -------KUBERNETES
+# Spin up the k8s cluster in the docker VM
 kup:
 	kubectl config set-cluster $(CLUSTER_NAME) --server http://$(DOCKER_MACHINE_IP):8080
 	kubectl config set-context $(PROJECT_NAME) --cluster $(CLUSTER_NAME) --namespace $(PROJECT_NAME)
@@ -72,18 +84,22 @@ kup:
 	bash ./tools/retry.sh "kubectl cluster-info" 2
 	-kubectl create namespace $(PROJECT_NAME)
 
+# Tear down the k8s cluster in the docker VM
 kdown:
 	docker-compose -f kubemaster/docker-compose.yaml down
 	docker-machine ssh $(DOCKER_MACHINE_NAME) "sudo rm -rf /etcd-data"
 	docker-machine ssh $(DOCKER_MACHINE_NAME) $(DOWNCMD)
 	docker ps -a -f "name = k8s_" -q | xargs docker rm -f
 
+# Create services, secrets and persistent disks
 resources:
 	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./resources/*/*.json | kubectl apply -f -
 
+# Create deployments/replication controllers/pods
 deployments:
 	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./deployments/*/*.json | kubectl apply -f -
 
+# Delete all deployments
 recall:
 	kubectl get deployments | cut -f 1 -d ' ' | tail -n +2 | xargs kubectl delete deployments
 
@@ -97,37 +113,45 @@ local-test:
 	go test -v ./lib/...
 	go test -v ./containers/...
 
-ui:
+# Start the Kubernetes Dashboard
+ui-k8s:
 	kubectl create -f https://rawgit.com/kubernetes/dashboard/master/src/deploy/kubernetes-dashboard.yaml
 
+# Create local certificates for TLS
 local-certs:
 	openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./misc/local-server.key -out ./misc/local-server.crt -subj "/CN=$(DOCKER_MACHINE_NAME).machine"
 
-# Service specific targets
+# -------SERVICE SPECIFIC TARGETS
+# Should be run within the docker builder container
 build-%:
 	make -C containers build-$*
 
+# Builds and dockerizes the target
 docker-build-%:
 	docker exec $(DOCKER_BUILDER_CONTAINER) make build-$*
 	make -C containers dockerize-$*
 
+# Deletes the designated pod
 recall-%:
 	kubectl get pods | grep $* | cut -f 1 -d ' ' | tail -n 1 | xargs kubectl delete pod 
 
+# Deploys the resources and deployments for a service
 deploy-%:
 	-go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./resources/$*/*.json | kubectl apply -f -
 	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./deployments/$*/*.json | kubectl apply -f -
 
+# Deletes a pod and bounces the ingress pod as well
 bounce-%:
 	make recall-$*
 	kubectl get pods | grep ingress | cut -f 1 -d ' ' | tail -n 1 | xargs kubectl delete pod 
 	sleep 1
 
+# Rebuild and redeploy a service
 loop-%: 
 	make docker-build-$*
 	make bounce-$*
 
-# GOOGLE SPECIFIC TARGETS
+# -------GOOGLE SPECIFIC TARGETS
 gcloud-kup:
 	gcloud $(GCLOUD_OPTS) config set compute/zone $(ZONE)
 	gcloud $(GCLOUD_OPTS) container clusters create $(CLUSTER_NAME) --num-nodes $(CLUSTER_NODES)

@@ -1,8 +1,10 @@
+*
+!/**/
+!*.*
+
 config.json
 tools/tools
 .commands
 build/
+vendor/*/
 *.pyc
-*
-!/**/
-!*.*
