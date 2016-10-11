@@ -4,6 +4,7 @@
     "HELLO_REPLICAS": "1",
     "SIMPLERPC_REPLICAS": "1",
     "AUTH_REPLICAS": "1",
+    "LOGGER_REPLICAS": "1",
 
     "ETCD_NODES": 3,
 

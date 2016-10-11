@@ -1,0 +1,33 @@
+{
+    "apiVersion": "extensions/v1beta1", 
+    "kind": "Deployment", 
+    "metadata": {
+        "namespace": "{{.NAMESPACE}}", 
+        "name": "logger"
+    },
+    "spec": {
+        "replicas": {{.LOGGER_REPLICAS}},
+        "template": {
+            "spec": {
+                "containers": [
+                    {
+                        "image": "{{$.DOCKER_REPO}}/logger:v1", 
+                        "name": "logger", 
+                        "ports": [ { "containerPort": 10002} ],
+                        "args": [ "-alsologtostderr=true" ]
+                    }
+                ]
+            }, 
+            "metadata": {
+                "labels": {
+                    "logger": "true"
+                }
+            }
+        }, 
+        "selector": {
+            "matchLabels": {
+                "logger": "true"
+            }
+        }
+    }
+}
