@@ -10,10 +10,17 @@ const (
 	ClientServiceName = "logger"
 )
 
-func GetDefaultClient() (protos.LoggerClient, error) {
+func GetK8sDefaultClient() (protos.LoggerClient, error) {
 	conn, err := grpc.Dial(utils.GetK8sAddress(ClientServiceName))
 	if err == nil {
 		defer conn.Close()
 	}
 	return protos.NewLoggerClient(conn), err
+}
+
+func GetDefaultClient() (protos.LoggerClient, error) {
+	if utils.InKubernetes() {
+		return GetK8sDefaultClient()
+	}
+	return NewMockLoggerClient(), nil
 }

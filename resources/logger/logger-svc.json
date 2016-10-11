@@ -10,7 +10,7 @@
         "ports": [
             {
                 "protocol": "TCP", 
-                "targetPort": 10002,
+                "targetPort": 10001,
                 "name": "http", 
                 "port": 80
             }

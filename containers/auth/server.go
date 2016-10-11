@@ -18,7 +18,7 @@ type AuthService struct {
 }
 
 const (
-	ApiPort = 8080
+	ApiPort = 10000
 )
 
 func NewAuthService(client auth.AuthClient) *AuthService {

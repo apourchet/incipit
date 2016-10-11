@@ -4,10 +4,11 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang/glog"
 )
 
 const (
-	DefaultPort     = 10000
+	DefaultPort     = 8080
 	DefaultEndpoint = "/healthz"
 )
 
@@ -21,6 +22,5 @@ func SpawnHealthCheck(port int) {
 	engine.GET(DefaultEndpoint, healthCheck)
 	go engine.Run(fmt.Sprintf(":%d", port))
 
-	// TODO LOG
-	// logging.Info("Healthz Ready at :%d%s\n", port, DefaultEndpoint)
+	glog.Infof("Healthz Ready at :%d%s\n", port, DefaultEndpoint)
 }

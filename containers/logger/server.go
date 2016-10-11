@@ -17,11 +17,11 @@ import (
 	"github.com/golang/glog"
 )
 
-type loggerServer struct {
+type loggerService struct {
 	store etcd.EtcdClient
 }
 
-func (l *loggerServer) LogLogin(ctx context.Context, req *pb.LogLoginReq) (*pb.LogLoginRes, error) {
+func (l *loggerService) LogLogin(ctx context.Context, req *pb.LogLoginReq) (*pb.LogLoginRes, error) {
 	key := req.UserId
 
 	// Get the last login value
@@ -49,9 +49,9 @@ func main() {
 	flag.Parse()
 	healthz.SpawnHealthCheck(healthz.DefaultPort)
 
-	service := &loggerServer{etcd.GetDefaultClient()}
+	service := &loggerService{etcd.GetDefaultClient()}
 	server := grpc.NewServer()
 	pb.RegisterLoggerServer(server, service)
 
-	glog.Fatalf("LoggerServer exited with error: %v", utils.ServeGRPC(10002, server))
+	glog.Fatalf("LoggerServer exited with error: %v", utils.ServeGRPC(10001, server))
 }
