@@ -9,7 +9,6 @@ is meant to be simple and easily extensible.
 - Etcd clustered
 - Ingress with TLS and path-based-routing
 - Environment-independent build targets
-- Example of sidecart containers
 - Example of RPC server working with etcd/redis
 
 # Planned
