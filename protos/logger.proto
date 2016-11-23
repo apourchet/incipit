@@ -1,0 +1,23 @@
+syntax = "proto3";
+package protos;
+
+import "google/api/annotations.proto";
+
+service Logger {
+    rpc LogLogin(LogLoginReq) returns (LogLoginRes) {
+        option (google.api.http) = {
+            post: "/rpc/v1/logger/loglogin"
+            body: "*"
+        };
+    }
+}
+
+message Emtpy {}
+
+message LogLoginReq {
+    string UserId = 1;
+}
+
+message LogLoginRes {
+    int64 LastLogin = 1;
+}

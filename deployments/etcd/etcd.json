@@ -1,0 +1,79 @@
+{{range loop $.ETCD_NODES}}
+{
+    "apiVersion": "extensions/v1beta1", 
+    "kind": "Deployment", 
+    "metadata": {
+        "namespace": "{{$.NAMESPACE}}", 
+        "name": "etcd{{.}}"
+    },
+    "spec": {
+        "replicas": 1,
+        "template": {
+            "metadata": {
+                "labels": {
+                    "etcd": "true",
+                    "etcd{{.}}": "true"
+                }
+            },
+            "spec": {
+                "containers": [
+                    {
+                        "name": "etcd{{.}}",
+                        "command": [
+                            "/usr/local/bin/etcd",
+                            "--name",
+                            "etcd{{.}}",
+                            "--data-dir",
+                            "/data/etcd/etcd{{.}}.d",
+                            "--initial-advertise-peer-urls",
+                            "http://$(ETCD{{.}}_SERVICE_HOST):2380",
+                            "--listen-peer-urls",
+                            "http://0.0.0.0:2380",
+                            "--listen-client-urls",
+                            "http://0.0.0.0:2379",
+                            "--advertise-client-urls",
+                            "http://$(ETCD{{.}}_SERVICE_HOST):2379",
+                            "--initial-cluster",
+                            "{{range loop $.ETCD_NODES}}etcd{{.}}=http://$(ETCD{{.}}_SERVICE_HOST):2380,{{end}}",
+                            "--initial-cluster-state",
+                            "new"
+                        ],
+                        "image": "quay.io/coreos/etcd:latest",
+                        "imagePullPolicy": "IfNotPresent",
+                        "ports": [
+                            {
+                                "name": "client",
+                                "protocol": "TCP",
+                                "containerPort": 2379
+                            }, {
+                                "name": "server",
+                                "protocol": "TCP",
+                                "containerPort": 2380
+                            }
+                        ],
+                        "volumeMounts": [
+                            {
+                                "name": "etcd-data",
+                                "mountPath": "/data/etcd"
+                            }
+                        ]
+                    }
+                ],
+                "volumes": [
+                    {
+                        "name": "etcd-data",
+                        "persistentVolumeClaim": {
+                            "claimName": "etcd-data"
+                        }
+                    }
+                ]
+            }
+        }, 
+        "selector": {
+            "matchLabels": {
+                "etcd{{.}}": "true"
+            }
+        }
+    }
+}
+{{end}}

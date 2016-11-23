@@ -1,0 +1,22 @@
+{
+    "NAMESPACE": "incipit",
+
+    "AUTH_REPLICAS": "1",
+    "LOGGER_REPLICAS": "1",
+
+    "ETCD_NODES": 3,
+
+    "INGRESS_HOSTNAME": "incipit.machine",
+    "INGRESS_HTTP_PORT": "30001",
+    "INGRESS_HTTPS_PORT": "30002",
+    "SERVER_CERT": "misc/local-server.crt",
+    "SERVER_KEY": "misc/local-server.key",
+
+    "DOCKER_REPO": "",
+
+    "IMAGE_PULL_POLICY": "Never",
+    "DEFAULT_ENV": [
+        {"name": "IN_KUBERNETES", "value": "true"},
+        {"name": "GIN_MODE", "value": "release"}
+    ]
+}

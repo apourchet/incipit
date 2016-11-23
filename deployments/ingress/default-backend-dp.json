@@ -1,0 +1,45 @@
+{
+    "apiVersion": "extensions/v1beta1", 
+    "kind": "Deployment", 
+    "metadata": {
+        "namespace": "{{$.NAMESPACE}}", 
+        "name": "default-http-backend"
+    },
+    "spec": {
+        "revisionHistoryLimit": 5, 
+        "replicas": 1, 
+        "template": {
+            "spec": {
+                "terminationGracePeriodSeconds": 60, 
+                "containers": [
+                    {
+                        "image": "gcr.io/google_containers/defaultbackend:1.0", 
+                        "name": "default-http-backend", 
+                        "ports": [
+                            { "containerPort": 8080 }
+                        ],
+                        "livenessProbe": {
+                            "initialDelaySeconds": 30, 
+                            "httpGet": {
+                                "path": "/healthz", 
+                                "scheme": "HTTP", 
+                                "port": 8080
+                            }, 
+                            "timeoutSeconds": 5
+                        }
+                    }
+                ]
+            }, 
+            "metadata": {
+                "labels": {
+                    "default-http-backend": "true"
+                }
+            }
+        }, 
+        "selector": {
+            "matchLabels": {
+                "default-http-backend": "true"
+            }
+        }
+    }
+}

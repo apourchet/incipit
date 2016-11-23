@@ -1,0 +1,70 @@
+{
+    "apiVersion": "extensions/v1beta1", 
+    "kind": "Deployment", 
+    "metadata": {
+        "labels": {
+            "main-ingress-lb": "true"
+        },
+        "namespace": "{{$.NAMESPACE}}", 
+        "name": "main-ingress-lb"
+    },
+    "spec": {
+        "replicas": 1,
+        "template": {
+            "spec": {
+                "containers": [
+                    {
+                        "name": "nginx-ingress-lb", 
+                        "image": "gcr.io/google_containers/nginx-ingress-controller:0.8.2", 
+                        "args": [
+                            "/nginx-ingress-controller", 
+                            "--default-backend-service=incipit/default-http-backend", 
+                            "--watch-namespace=incipit", 
+                            "--v=3", 
+                            "--sync-period=5s"
+                        ],
+                        "env": [
+                            {
+                                "valueFrom": {
+                                    "fieldRef": { "fieldPath": "metadata.name" }
+                                }, 
+                                "name": "POD_NAME"
+                            }, 
+                            {
+                                "valueFrom": {
+                                    "fieldRef": { "fieldPath": "metadata.namespace" }
+                                }, 
+                                "name": "POD_NAMESPACE"
+                            }
+                        ], 
+                        "ports": [
+                            { "containerPort": 80 }, 
+                            { "containerPort": 443 }, 
+                            { "containerPort": 8080 }
+                        ],
+                        "livenessProbe": {
+                            "initialDelaySeconds": 30, 
+                            "httpGet": {
+                                "path": "/healthz", 
+                                "scheme": "HTTP", 
+                                "port": 10249
+                            }, 
+                            "timeoutSeconds": 5
+                        }
+                    }
+                ],
+                "terminationGracePeriodSeconds": 60
+            }, 
+            "metadata": {
+                "labels": {
+                    "main-ingress-lb": "true"
+                }
+            }
+        }, 
+        "selector": {
+            "matchLabels": {
+                "main-ingress-lb": "true"
+            }
+        }
+    }
+}

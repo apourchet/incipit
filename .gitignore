@@ -1,0 +1,11 @@
+*
+!/**/
+!*.*
+!Makefile
+!vendor/**/*
+
+config.json
+tools/tools
+.commands
+build/
+*.pyc

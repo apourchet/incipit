@@ -1,0 +1,31 @@
+{
+    "apiVersion": "v1", 
+    "kind": "Service", 
+    "metadata": {
+        "namespace": "{{.NAMESPACE}}", 
+        "name": "main-ingress"
+    },
+    "spec": {
+        "selector": {
+            "main-ingress-lb": "true"
+        }, 
+        "type": "LoadBalancer", 
+        "ports": [
+            {
+                "protocol": "TCP", 
+                "targetPort": 80, 
+                "port": 80, 
+                "nodePort": {{.INGRESS_HTTP_PORT}},
+                "name": "http"
+            }, 
+            {
+                "protocol": "TCP", 
+                "targetPort": 443, 
+                "port": 443, 
+                "nodePort": {{.INGRESS_HTTPS_PORT}}, 
+                "name": "https"
+            }
+        ], 
+        "sessionAffinity": "None"
+    }
+}
