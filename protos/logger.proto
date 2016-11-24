@@ -7,7 +7,6 @@ service Logger {
     rpc LogLogin(LogLoginReq) returns (LogLoginRes) {
         option (google.api.http) = {
             post: "/rpc/v1/logger/loglogin"
-            body: "*"
         };
     }
 }

@@ -54,6 +54,13 @@ build:
 	make protos
 	make -C containers build
 
+protos:
+	ldconfig
+	which protoc || make -C ./vendor/github.com/google/protobuf install
+	protoc $(PROTOC_OPTS) protos/*.proto 
+	protoc $(PROTOC_OPTS) --grpc-gateway_out=logtostderr=true:protos/go/ protos/*.proto 
+	protoc $(PROTOC_OPTS) --swagger_out=logtostderr=true:protos/swagger/ protos/*.proto 
+
 # Create a docker container that will be used 
 # to do all of the building
 # docker build -f Dockerfile -t $(DOCKER_BUILDER_IMAGENAME) .
@@ -70,14 +77,11 @@ docker-build:
 	docker exec $(DOCKER_BUILDER_CONTAINER) make build
 	make dockerize
 
+docker-protos:
+	docker exec $(DOCKER_BUILDER_CONTAINER) make protos
+
 dockerize:
 	make -C containers dockerize
-
-protos:
-	ldconfig
-	which protoc || make -C ./vendor/github.com/google/protobuf install
-	protoc $(PROTOC_OPTS) protos/*.proto 
-	protoc $(PROTOC_OPTS) --grpc-gateway_out=logtostderr=true:protos/go/ protos/*.proto 
 
 # -------KUBERNETES
 # Spin up the k8s cluster in the docker VM

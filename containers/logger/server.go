@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"net/http"
 	"strconv"
 	"time"
 
@@ -16,7 +15,6 @@ import (
 	"github.com/apourchet/incipit/lib/utils"
 	pb "github.com/apourchet/incipit/protos/go"
 	"github.com/golang/glog"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
 
 type loggerService struct {
@@ -59,17 +57,6 @@ func main() {
 	go func() {
 		err := utils.ServeGRPC(10001, server)
 		glog.Fatalf("LoggerServer exited with error: %v", err)
-	}()
-
-	go func() {
-		mux := runtime.NewServeMux()
-		opts := []grpc.DialOption{grpc.WithInsecure()}
-		err := pb.RegisterLoggerHandlerFromEndpoint(context.Background(), mux, ":10001", opts)
-		if err != nil {
-			glog.Fatalf("LoggerServer reverse-proxy exited with error: %v", err)
-		}
-		err = http.ListenAndServe(":10002", mux)
-		glog.Fatalf("LoggerServer reverse-proxy exited with error: %v", err)
 	}()
 
 	select {} // Sleep forever

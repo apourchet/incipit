@@ -1,0 +1,199 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "auth.proto",
+    "version": "version not set"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/auth/deregister": {
+      "post": {
+        "operationId": "Deregister",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/protosDeregisterRes"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/protosDeregisterReq"
+            }
+          }
+        ],
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
+    "/api/v1/auth/login": {
+      "get": {
+        "operationId": "Login",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/protosLoginRes"
+            }
+          }
+        },
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "operationId": "Logout",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/protosLogoutRes"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/protosLogoutReq"
+            }
+          }
+        ],
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "operationId": "Register",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/protosRegisterRes"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/protosRegisterReq"
+            }
+          }
+        ],
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
+    "/api/v1/auth/userexists": {
+      "get": {
+        "operationId": "UserExists",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/protosUserExistsRes"
+            }
+          }
+        },
+        "tags": [
+          "AuthService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protosDeregisterReq": {
+      "type": "object"
+    },
+    "protosDeregisterRes": {
+      "type": "object"
+    },
+    "protosLoginReq": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "format": "string"
+        },
+        "pass": {
+          "type": "string",
+          "format": "string"
+        }
+      }
+    },
+    "protosLoginRes": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string",
+          "format": "string"
+        }
+      }
+    },
+    "protosLogoutReq": {
+      "type": "object"
+    },
+    "protosLogoutRes": {
+      "type": "object"
+    },
+    "protosRegisterReq": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "format": "string"
+        },
+        "pass": {
+          "type": "string",
+          "format": "string"
+        }
+      }
+    },
+    "protosRegisterRes": {
+      "type": "object"
+    },
+    "protosUserExistsReq": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "format": "string"
+        }
+      }
+    },
+    "protosUserExistsRes": {
+      "type": "object",
+      "properties": {
+        "found": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      }
+    }
+  }
+}

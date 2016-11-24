@@ -14,7 +14,7 @@
                         "image": "{{$.DOCKER_REPO}}auth:latest", 
                         "imagePullPolicy": "{{$.IMAGE_PULL_POLICY}}",
                         "name": "auth", 
-                        "ports": [ { "containerPort": 10000 } ],
+                        "ports": [ { "containerPort": 10000 }, { "containerPort": 10001 } ],
                         "args": [ "-alsologtostderr=true" ],
                         "env": {{$.DEFAULT_ENV}}
                     }

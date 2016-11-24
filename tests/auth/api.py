@@ -35,11 +35,11 @@ class Auth():
 
     def logout(self, session):
         url = 'https://%s/api/v1/auth/logout' % self.ing_addr
-        return session.post(url)
+        return session.post(url, json={})
 
     def deregister(self, session):
         url = 'https://%s/api/v1/auth/deregister' % self.ing_addr
-        return session.post(url)
+        return session.post(url, json={})
 
     def test(self):
         session = utils.newSession()
@@ -70,4 +70,4 @@ class Auth():
 
         resp = self.userExists(session, username)
         assert resp.status_code == 200
-        assert resp.json()['found'] == False
+        assert ('found' not in resp.json() or resp.json()['found'] == False)

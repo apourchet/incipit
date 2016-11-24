@@ -1,10 +1,15 @@
 package auth
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
-	"github.com/gin-gonic/gin"
+	"github.com/golang/glog"
+
+	"google.golang.org/grpc/metadata"
+
+	"golang.org/x/net/context"
 )
 
 const (
@@ -12,41 +17,24 @@ const (
 	CookieMaxAge = 0
 )
 
-func SetToken(c *gin.Context, token string) error {
-	cookie := newCookieFromToken(token)
-	http.SetCookie(c.Writer, cookie)
-	return nil
-}
-
-func DeleteToken(c *gin.Context) error {
-	cookie := newExpiredCookie()
-	http.SetCookie(c.Writer, cookie)
-	return nil
-}
-
-func GetToken(c *gin.Context) (token string, err error) {
-	token, err = tokenFromHeader(c)
-	if err == nil {
-		return token, nil
+func GetToken(ctx context.Context) (token string, err error) {
+	md, ok := metadata.FromContext(ctx)
+	if !ok {
+		return "", fmt.Errorf("Found no token in request")
 	}
 
-	// TODO warning here, client should not be using the cookies
-	cookie, err := c.Request.Cookie(CookieName)
-	if err == nil {
-		return cookie.Value, nil
+	authArr, ok := md["authorization"]
+	if !ok || len(authArr) != 1 {
+		return "", fmt.Errorf("Found no token in request")
 	}
-	return "", err
-}
 
-func tokenFromHeader(c *gin.Context) (token string, err error) {
-	header := c.Request.Header.Get("Authorization")
-	if header == "" {
-		return "", nil
+	bearerArr := strings.Split(authArr[0], "Bearer ")
+	if len(bearerArr) != 2 {
+		return "", fmt.Errorf("Malformed bearer header: %s", authArr[0])
 	}
-	if !strings.HasPrefix(header, "Bearer ") {
-		return "", nil
-	}
-	return strings.Split(header, "Bearer ")[1], nil
+	token = bearerArr[1]
+	glog.Infof("Got token: %s", token)
+	return token, nil
 }
 
 func newCookieFromToken(token string) *http.Cookie {

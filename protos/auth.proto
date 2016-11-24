@@ -1,0 +1,71 @@
+syntax = "proto3";
+package protos;
+
+import "google/api/annotations.proto";
+
+service AuthService {
+    rpc UserExists(UserExistsReq) returns (UserExistsRes) {
+        option (google.api.http) = {
+            get: "/api/v1/auth/userexists"
+        };
+    }
+    
+    rpc Register(RegisterReq) returns (RegisterRes) {
+        option (google.api.http) = {
+            post: "/api/v1/auth/register"
+            body: "*"
+        };
+    }
+    
+    rpc Login(LoginReq) returns (LoginRes) {
+        option (google.api.http) = {
+            get: "/api/v1/auth/login"
+        };
+    }
+    
+    rpc Logout(LogoutReq) returns (LogoutRes) {
+        option (google.api.http) = {
+            post: "/api/v1/auth/logout"
+            body: "*"
+        };
+    }
+    
+    rpc Deregister(DeregisterReq) returns (DeregisterRes) {
+        option (google.api.http) = {
+            post: "/api/v1/auth/deregister"
+            body: "*"
+        };
+    }
+}
+
+message UserExistsReq {
+    string key = 1;
+}
+
+message UserExistsRes {
+    bool found = 1;
+}
+
+message RegisterReq {
+    string key = 1;
+    string pass = 2;
+}
+
+message RegisterRes {}
+
+message LoginReq {
+    string key = 1;
+    string pass = 2;
+}
+
+message LoginRes {
+    string token = 1;
+}
+
+message LogoutReq {}
+
+message LogoutRes {}
+
+message DeregisterReq {}
+
+message DeregisterRes {}
