@@ -30,7 +30,9 @@ func ServeGRPC(port int, server *grpc.Server) error {
 }
 
 func GrpcReverseProxy(ctx context.Context, fn ReverseProxyFunc, external, internal int, opts ...grpc.DialOption) error {
-	mux := runtime.NewServeMux()
+	jsonPbOpts := &runtime.JSONPb{OrigName: true, EmitDefaults: true}
+	marshallingOpts := runtime.WithMarshalerOption(runtime.MIMEWildcard, jsonPbOpts)
+	mux := runtime.NewServeMux(marshallingOpts)
 	if len(opts) == 0 {
 		opts = append(opts, grpc.WithInsecure())
 	}
