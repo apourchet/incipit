@@ -1,0 +1,35 @@
+{
+    "apiVersion": "extensions/v1beta1", 
+    "kind": "Deployment", 
+    "metadata": {
+        "namespace": "incipit", 
+        "name": "auth"
+    },
+    "spec": {
+        "replicas": 1,
+        "template": {
+            "spec": {
+                "containers": [
+                    {
+                        "image": "auth:latest", 
+                        "imagePullPolicy": "Never",
+                        "name": "auth", 
+                        "ports": [ { "containerPort": 10000 }, { "containerPort": 10001 } ],
+                        "args": [ "-alsologtostderr=true" ],
+                        "env": [{"name":"IN_KUBERNETES","value":"true"},{"name":"GIN_MODE","value":"release"}]
+                    }
+                ]
+            }, 
+            "metadata": {
+                "labels": {
+                    "auth": "true"
+                }
+            }
+        }, 
+        "selector": {
+            "matchLabels": {
+                "auth": "true"
+            }
+        }
+    }
+}

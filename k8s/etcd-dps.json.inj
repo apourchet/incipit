@@ -1,0 +1,235 @@
+
+{
+    "apiVersion": "extensions/v1beta1", 
+    "kind": "Deployment", 
+    "metadata": {
+        "namespace": "incipit", 
+        "name": "etcd0"
+    },
+    "spec": {
+        "replicas": 1,
+        "template": {
+            "metadata": {
+                "labels": {
+                    "etcd": "true",
+                    "etcd0": "true"
+                }
+            },
+            "spec": {
+                "containers": [
+                    {
+                        "name": "etcd0",
+                        "command": [
+                            "/usr/local/bin/etcd",
+                            "--name",
+                            "etcd0",
+                            "--data-dir",
+                            "/data/etcd/etcd0.d",
+                            "--initial-advertise-peer-urls",
+                            "http://$(ETCD0_SERVICE_HOST):2380",
+                            "--listen-peer-urls",
+                            "http://0.0.0.0:2380",
+                            "--listen-client-urls",
+                            "http://0.0.0.0:2379",
+                            "--advertise-client-urls",
+                            "http://$(ETCD0_SERVICE_HOST):2379",
+                            "--initial-cluster",
+                            "etcd0=http://$(ETCD0_SERVICE_HOST):2380,etcd1=http://$(ETCD1_SERVICE_HOST):2380,etcd2=http://$(ETCD2_SERVICE_HOST):2380,",
+                            "--initial-cluster-state",
+                            "new"
+                        ],
+                        "image": "quay.io/coreos/etcd:latest",
+                        "imagePullPolicy": "IfNotPresent",
+                        "ports": [
+                            {
+                                "name": "client",
+                                "protocol": "TCP",
+                                "containerPort": 2379
+                            }, {
+                                "name": "server",
+                                "protocol": "TCP",
+                                "containerPort": 2380
+                            }
+                        ],
+                        "volumeMounts": [
+                            {
+                                "name": "etcd-data",
+                                "mountPath": "/data/etcd"
+                            }
+                        ]
+                    }
+                ],
+                "volumes": [
+                    {
+                        "name": "etcd-data",
+                        "persistentVolumeClaim": {
+                            "claimName": "etcd-data"
+                        }
+                    }
+                ]
+            }
+        }, 
+        "selector": {
+            "matchLabels": {
+                "etcd0": "true"
+            }
+        }
+    }
+}
+
+{
+    "apiVersion": "extensions/v1beta1", 
+    "kind": "Deployment", 
+    "metadata": {
+        "namespace": "incipit", 
+        "name": "etcd1"
+    },
+    "spec": {
+        "replicas": 1,
+        "template": {
+            "metadata": {
+                "labels": {
+                    "etcd": "true",
+                    "etcd1": "true"
+                }
+            },
+            "spec": {
+                "containers": [
+                    {
+                        "name": "etcd1",
+                        "command": [
+                            "/usr/local/bin/etcd",
+                            "--name",
+                            "etcd1",
+                            "--data-dir",
+                            "/data/etcd/etcd1.d",
+                            "--initial-advertise-peer-urls",
+                            "http://$(ETCD1_SERVICE_HOST):2380",
+                            "--listen-peer-urls",
+                            "http://0.0.0.0:2380",
+                            "--listen-client-urls",
+                            "http://0.0.0.0:2379",
+                            "--advertise-client-urls",
+                            "http://$(ETCD1_SERVICE_HOST):2379",
+                            "--initial-cluster",
+                            "etcd0=http://$(ETCD0_SERVICE_HOST):2380,etcd1=http://$(ETCD1_SERVICE_HOST):2380,etcd2=http://$(ETCD2_SERVICE_HOST):2380,",
+                            "--initial-cluster-state",
+                            "new"
+                        ],
+                        "image": "quay.io/coreos/etcd:latest",
+                        "imagePullPolicy": "IfNotPresent",
+                        "ports": [
+                            {
+                                "name": "client",
+                                "protocol": "TCP",
+                                "containerPort": 2379
+                            }, {
+                                "name": "server",
+                                "protocol": "TCP",
+                                "containerPort": 2380
+                            }
+                        ],
+                        "volumeMounts": [
+                            {
+                                "name": "etcd-data",
+                                "mountPath": "/data/etcd"
+                            }
+                        ]
+                    }
+                ],
+                "volumes": [
+                    {
+                        "name": "etcd-data",
+                        "persistentVolumeClaim": {
+                            "claimName": "etcd-data"
+                        }
+                    }
+                ]
+            }
+        }, 
+        "selector": {
+            "matchLabels": {
+                "etcd1": "true"
+            }
+        }
+    }
+}
+
+{
+    "apiVersion": "extensions/v1beta1", 
+    "kind": "Deployment", 
+    "metadata": {
+        "namespace": "incipit", 
+        "name": "etcd2"
+    },
+    "spec": {
+        "replicas": 1,
+        "template": {
+            "metadata": {
+                "labels": {
+                    "etcd": "true",
+                    "etcd2": "true"
+                }
+            },
+            "spec": {
+                "containers": [
+                    {
+                        "name": "etcd2",
+                        "command": [
+                            "/usr/local/bin/etcd",
+                            "--name",
+                            "etcd2",
+                            "--data-dir",
+                            "/data/etcd/etcd2.d",
+                            "--initial-advertise-peer-urls",
+                            "http://$(ETCD2_SERVICE_HOST):2380",
+                            "--listen-peer-urls",
+                            "http://0.0.0.0:2380",
+                            "--listen-client-urls",
+                            "http://0.0.0.0:2379",
+                            "--advertise-client-urls",
+                            "http://$(ETCD2_SERVICE_HOST):2379",
+                            "--initial-cluster",
+                            "etcd0=http://$(ETCD0_SERVICE_HOST):2380,etcd1=http://$(ETCD1_SERVICE_HOST):2380,etcd2=http://$(ETCD2_SERVICE_HOST):2380,",
+                            "--initial-cluster-state",
+                            "new"
+                        ],
+                        "image": "quay.io/coreos/etcd:latest",
+                        "imagePullPolicy": "IfNotPresent",
+                        "ports": [
+                            {
+                                "name": "client",
+                                "protocol": "TCP",
+                                "containerPort": 2379
+                            }, {
+                                "name": "server",
+                                "protocol": "TCP",
+                                "containerPort": 2380
+                            }
+                        ],
+                        "volumeMounts": [
+                            {
+                                "name": "etcd-data",
+                                "mountPath": "/data/etcd"
+                            }
+                        ]
+                    }
+                ],
+                "volumes": [
+                    {
+                        "name": "etcd-data",
+                        "persistentVolumeClaim": {
+                            "claimName": "etcd-data"
+                        }
+                    }
+                ]
+            }
+        }, 
+        "selector": {
+            "matchLabels": {
+                "etcd2": "true"
+            }
+        }
+    }
+}
+

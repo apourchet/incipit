@@ -1,0 +1,27 @@
+{
+    "apiVersion": "batch/v1", 
+    "kind": "Job", 
+    "metadata": {
+        "namespace": "incipit", 
+        "name": "tester-job"
+    },
+    "spec": {
+        "template": {
+            "spec": {
+                "restartPolicy": "Never", 
+                "containers": [
+                    {
+                        "image": "tester:latest",
+                        "imagePullPolicy": "Never",
+                        "name": "tester",
+                        "command": ["/bin/bash", "/test.sh"],
+                        "env": [{"name":"IN_KUBERNETES","value":"true"},{"name":"GIN_MODE","value":"release"}] 
+                    }
+                ]
+            }, 
+            "metadata": {
+                "name": "tester-job"
+            }
+        }
+    }
+}

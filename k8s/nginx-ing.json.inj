@@ -1,0 +1,34 @@
+{
+    "apiVersion": "extensions/v1beta1", 
+    "kind": "Ingress", 
+    "metadata": {
+        "namespace": "incipit", 
+        "name": "main-ingress"
+    },
+    "spec": {
+        "tls": [
+            {
+                "hosts": [
+                    "incipit.machine"
+                ], 
+                "secretName": "server-cert"
+            }
+        ], 
+        "rules": [
+            {
+                "host": "incipit.machine", 
+                "http": {
+                    "paths": [
+                        {
+                            "path": "/api/v1/auth", 
+                            "backend": {
+                                "serviceName": "auth", 
+                                "servicePort": 10000
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

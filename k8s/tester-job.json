@@ -1,0 +1,27 @@
+{
+    "apiVersion": "batch/v1", 
+    "kind": "Job", 
+    "metadata": {
+        "namespace": "{{.NAMESPACE}}", 
+        "name": "tester-job"
+    },
+    "spec": {
+        "template": {
+            "spec": {
+                "restartPolicy": "Never", 
+                "containers": [
+                    {
+                        "image": "{{$.DOCKER_REPO}}tester:latest",
+                        "imagePullPolicy": "{{$.IMAGE_PULL_POLICY}}",
+                        "name": "tester",
+                        "command": ["/bin/bash", "/test.sh"],
+                        "env": {{$.DEFAULT_ENV}} 
+                    }
+                ]
+            }, 
+            "metadata": {
+                "name": "tester-job"
+            }
+        }
+    }
+}

@@ -1,0 +1,35 @@
+{
+    "apiVersion": "extensions/v1beta1", 
+    "kind": "Deployment", 
+    "metadata": {
+        "namespace": "incipit", 
+        "name": "logger"
+    },
+    "spec": {
+        "replicas": 1,
+        "template": {
+            "spec": {
+                "containers": [
+                    {
+                        "image": "logger:latest", 
+                        "imagePullPolicy": "Never",
+                        "name": "logger", 
+                        "ports": [ { "containerPort": 10001} ],
+                        "args": [ "-alsologtostderr=true" ],
+                        "env": [{"name":"IN_KUBERNETES","value":"true"},{"name":"GIN_MODE","value":"release"}]
+                    }
+                ]
+            }, 
+            "metadata": {
+                "labels": {
+                    "logger": "true"
+                }
+            }
+        }, 
+        "selector": {
+            "matchLabels": {
+                "logger": "true"
+            }
+        }
+    }
+}

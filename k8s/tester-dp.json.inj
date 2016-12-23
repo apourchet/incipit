@@ -1,0 +1,33 @@
+{
+    "apiVersion": "extensions/v1beta1", 
+    "kind": "Deployment", 
+    "metadata": {
+        "namespace": "incipit", 
+        "name": "tester"
+    },
+    "spec": {
+        "replicas": 1,
+        "template": {
+            "spec": {
+                "containers": [
+                    {
+                        "image": "tester:latest", 
+                        "imagePullPolicy": "Never",
+                        "name": "tester",
+                        "env": [{"name":"IN_KUBERNETES","value":"true"},{"name":"GIN_MODE","value":"release"}]
+                    }
+                ]
+            }, 
+            "metadata": {
+                "labels": {
+                    "tester": "true"
+                }
+            }
+        }, 
+        "selector": {
+            "matchLabels": {
+                "tester": "true"
+            }
+        }
+    }
+}

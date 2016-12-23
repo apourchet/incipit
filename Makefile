@@ -26,8 +26,6 @@ PROTOC_OPTS += --go_out=Mgoogle/api/annotations.proto=github.com/grpc-ecosystem/
 TESTER_NAME = tester
 
 # TOOLS
-KUBE_CONFIG_TOOL = ./tools/kubeconfig/kubeconfig.go
-KUBE_CONFIG = ./kubeconfigs/local.json
 KUBERNETES_PUBLIC_ADDRESS=$(gcloud compute addresses describe kubernetes --format 'value(address)')
 
 .PHONY: resources deployments docker-builder protos
@@ -100,23 +98,9 @@ kdown:
 	docker-machine ssh $(DOCKER_MACHINE_NAME) $(DOWNCMD)
 	docker ps -a -f "name = k8s_" -q | xargs docker rm -f
 
-# Create services, secrets and persistent disks
-resources:
-	-kubectl create namespace $(PROJECT_NAME)
-	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./resources/*/*.json | kubectl apply -f -
-
-# Create deployments/replication controllers/pods
-deployments:
-	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./deployments/*/*.json | kubectl apply -f -
-
-# Delete all deployments
-recall:
-	kubectl get deployments | cut -f 1 -d ' ' | tail -n +2 | xargs kubectl delete deployments
-
 # Spin up pod that tests
 test: docker-build-tester
-	-kubectl delete job tester-job
-	go run $(KUBE_CONFIG_TOOL) $(KUBE_CONFIG) ./jobs/tester/*.json | kubectl apply -f -
+	kubemgr recreate tester-job
 
 # Test locally
 local-test:

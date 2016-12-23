@@ -1,0 +1,22 @@
+{
+    "apiVersion": "v1", 
+    "kind": "Service", 
+    "metadata": {
+        "namespace": "incipit", 
+        "name": "auth"
+    },
+    "spec": {
+        "type": "ClusterIP", 
+        "ports": [
+            {
+                "protocol": "TCP", 
+                "targetPort": 10000,
+                "name": "http", 
+                "port": 80
+            }
+        ], 
+        "selector": {
+            "auth": "true"
+        }
+    }
+}
